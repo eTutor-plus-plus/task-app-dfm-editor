@@ -1,0 +1,535 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #182230;
+  background: #f7f8fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1560px, 100%);
+  margin: 0 auto;
+  padding: 28px 32px 20px;
+}
+
+.topbar,
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+
+
+.graph-count {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f2f4f7;
+  color: #475467;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.topbar {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 5px;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: 17px;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.example-button,
+.language-button {
+  padding: 9px 14px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #344054;
+  cursor: pointer;
+}
+
+.example-button:hover,
+.language-button:hover {
+  border-color: #98a2b3;
+  background: #f9fafb;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(340px, 0.85fr) minmax(480px, 1.4fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.panel {
+  min-width: 0;
+  min-height: 680px;
+  padding: 18px;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgb(16 24 40 / 4%);
+}
+
+.notes-panel {
+  min-height: 0;
+  margin-top: 20px;
+}
+
+.notes-panel .panel-heading {
+  margin-bottom: 12px;
+}
+
+.notes-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notes-feedback {
+  color: #027a48;
+  font-size: 12px;
+}
+
+.copy-notes-button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #344054;
+  cursor: pointer;
+}
+
+.copy-notes-button:hover:not(:disabled) {
+  border-color: #98a2b3;
+  background: #f9fafb;
+}
+
+.copy-notes-button:disabled {
+  color: #98a2b3;
+  cursor: not-allowed;
+}
+
+.copy-notes-button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.notes-textarea {
+  display: block;
+  width: 100%;
+  min-height: 150px;
+  padding: 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  color: #182230;
+  font: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.notes-textarea::placeholder {
+  color: #98a2b3;
+}
+
+.notes-textarea:focus-visible,
+.copy-notes-button:focus-visible {
+  outline: 3px solid rgb(21 112 239 / 20%);
+  outline-offset: 2px;
+}
+
+.app-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 14px 2px 0;
+  border-top: 1px solid #e4e7ec;
+  color: #667085;
+  font-size: 12px;
+}
+
+.app-footer a {
+  color: #175cd3;
+  text-decoration: none;
+}
+
+.app-footer a:hover {
+  text-decoration: underline;
+}
+
+.panel-heading {
+  min-height: 48px;
+  margin-bottom: 16px;
+}
+
+.status-indicator,
+.panel-hint {
+  color: #667085;
+  font-size: 12px;
+}
+
+.status-indicator.has-error,
+.error-message {
+  color: #b42318;
+}
+
+.source-editor {
+  height: 520px;
+  overflow: hidden;
+  border: 1px solid #e4e7ec;
+  border-radius: 8px;
+}
+
+.editor-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.editor-toolbar .example-button {
+  padding: 7px 11px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.run-button,
+.reset-button {
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.run-button {
+  background: #039855;
+  color: #fff;
+}
+
+.run-button:hover:not(:disabled) {
+  background: #027a48;
+}
+
+.run-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.reset-button {
+  border-color: #d0d5dd;
+  background: #fff;
+  color: #344054;
+}
+
+.reset-button:hover {
+  border-color: #98a2b3;
+  background: #f9fafb;
+}
+
+.format-button,
+.graph-controls button {
+  border: 1px solid #d0d5dd;
+  border-radius: 7px;
+  background: #fff;
+  color: #344054;
+  cursor: pointer;
+}
+
+.format-button {
+  padding: 7px 11px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.format-button:hover,
+.graph-controls button:hover {
+  border-color: #98a2b3;
+  background: #f9fafb;
+}
+
+.source-editor .cm-editor {
+  height: 100%;
+}
+
+.source-editor .cm-keyword {
+  color: #6941c6;
+  font-weight: 700;
+}
+
+.source-editor .cm-operator {
+  color: #175cd3;
+  font-weight: 700;
+}
+
+.source-editor .cm-variableName {
+  color: #027a48;
+}
+
+.panel-hint {
+  margin: 10px 0 0;
+}
+
+.graph-canvas {
+  position: relative;
+  min-height: 580px;
+  overflow: hidden;
+  border: 1px solid #e4e7ec;
+  border-radius: 8px;
+  background:
+    radial-gradient(#e4e7ec 0.75px, transparent 0.75px) 0 0 / 20px 20px,
+    #fcfcfd;
+}
+
+.graph-controls {
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.graph-controls button {
+  min-width: 34px;
+  min-height: 34px;
+  padding: 6px 9px;
+}
+
+.graph-controls button:disabled {
+  color: #98a2b3;
+  cursor: not-allowed;
+}
+
+.graph-controls .export-png-icon {
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.graph-controls button[aria-label="Vergrößern"],
+.graph-controls button[aria-label="Verkleinern"] {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.export-error {
+  position: absolute;
+  z-index: 2;
+  top: 54px;
+  right: 12px;
+  max-width: min(360px, calc(100% - 24px));
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid #fecdca;
+  border-radius: 7px;
+  background: #fffbfa;
+  color: #b42318;
+  font-size: 12px;
+}
+
+.graph-canvas svg {
+  display: block;
+  width: 100%;
+  min-height: 580px;
+}
+
+.empty-graph {
+  position: absolute;
+  inset: 50% 16px auto;
+  margin: 0;
+  color: #98a2b3;
+  text-align: center;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.edge {
+  stroke: #98a2b3;
+  stroke-width: 1.5;
+  stroke-opacity: 0.8;
+}
+
+.optional-edge-marker {
+  stroke: #667085;
+  stroke-width: 1.5;
+}
+
+.graph-node {
+  cursor: grab;
+}
+
+.graph-node:active {
+  cursor: grabbing;
+}
+
+.graph-node rect {
+  fill: #fff;
+  stroke: #98a2b3;
+  stroke-width: 1.5;
+}
+
+.graph-node.fact rect {
+  stroke: #1570ef;
+  stroke-width: 2;
+}
+
+.graph-node.dimension rect {
+  fill: #f0f9ff;
+  stroke: #0ba5ec;
+}
+
+.graph-node.level circle {
+  fill: #fff;
+  stroke: #1570ef;
+  stroke-width: 2;
+}
+
+.graph-node.fact .box-label {
+  fill: #1570ef;
+}
+
+.graph-node.fact .fact-divider {
+  stroke: #1570ef;
+}
+
+.graph-node.fact .measure-label {
+  fill: #667085;
+  font-size: 11px;
+}
+
+.box-label {
+  fill: #101828;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.node-label,
+.descriptive-label {
+  fill: #101828;
+  font-size: 12px;
+}
+
+.descriptive-label {
+  font-size: 12px;
+}
+
+.graph-node.descriptive rect {
+  stroke: none;
+}
+
+.graph-node.descriptive .descriptive-underline,
+.graph-node.level .level-optional-marker {
+  stroke: #101828;
+  stroke-width: 1.5;
+}
+
+.node-detail {
+  fill: #667085;
+  font-size: 10px;
+}
+
+.error-message {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 12px;
+  padding: 11px 12px;
+  border: 1px solid #fecdca;
+  border-radius: 8px;
+  background: #fffbfa;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    padding: 20px 16px 16px;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    min-height: auto;
+  }
+
+  .source-editor {
+    height: 360px;
+  }
+
+  .graph-canvas,
+  .graph-canvas svg {
+    min-height: 420px;
+  }
+}

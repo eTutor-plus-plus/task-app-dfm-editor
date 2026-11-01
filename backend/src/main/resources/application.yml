@@ -1,0 +1,11 @@
+server:
+  port: 8082
+  server-header: ""
+  error:
+    include-stacktrace: never
+    include-message: never
+  forward-headers-strategy: framework
+
+dfm:
+  editor:
+    max-request-bytes: 102400

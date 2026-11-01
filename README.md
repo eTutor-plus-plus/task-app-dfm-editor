@@ -42,6 +42,28 @@ npm run dev
 
 Die Oberfläche ist unter <http://localhost:5173> verfügbar. Die Editor-API liegt unter <http://localhost:8082/api/dfm/parse>.
 
+### Browser-Tests
+
+Die Playwright-Tests starten das Frontend automatisch auf Port 4173. Standardmäßig wird die Parse-API mit Fixtures simuliert (`frontend/e2e/fixtures/*.dfm` und `*.json`, die JSON-Dateien stammen aus dem echten Parser); ein laufendes Backend ist dafür nicht erforderlich. Chromium muss einmalig installiert werden:
+
+```powershell
+cd frontend
+npm ci
+npx playwright install chromium
+npm run test:e2e
+```
+
+Die Tests prüfen für jedes Szenario Graph-Inhalt, Überlappungen von Knoten, Kanten durch fremde Knoten, abgeschnittene Knoten und eine lesbare Mindestskalierung. Mit laufendem Backend (Port 8082) und `E2E_BACKEND=1` wird zusätzlich geprüft, dass der echte Parser noch dieselben Graphen wie die Fixtures liefert:
+
+```powershell
+$env:E2E_BACKEND = '1'
+npm run test:e2e
+```
+
+### Starten in IntelliJ IDEA
+
+Die geteilte Run-Konfiguration **DFM Editor (Dev)** startet Frontend und Backend zusammen. Wähle sie in der Run-Konfigurationsauswahl aus und klicke auf **Run**; zum Beenden genügt **Stop**, wodurch beide Prozesse beendet werden. Die Konfigurationen **DFM Frontend** und **DFM Backend** können auch einzeln gestartet werden.
+
 ## Produktions-Build
 
 ```powershell
@@ -56,6 +78,28 @@ Das Spring-Boot-JAR enthält danach auch die gebaute Oberfläche. Starten lässt
 
 ```powershell
 java -jar target\task-app-dfm-editor-0.1.0-SNAPSHOT.jar
+```
+
+## Docker
+
+Das mehrstufige Dockerfile baut das Frontend und Backend in separaten Stufen. Das finale Image enthält nur das Spring-Boot-JAR und Java 21; Node.js und Maven bleiben in den Build-Stufen. Für den privaten Bezug von `task-app-dfm-core` wird die lokale Maven-Konfiguration als BuildKit-Secret eingebunden, nicht in das Image kopiert:
+
+```powershell
+docker build --secret "id=maven_settings,src=$env:USERPROFILE\.m2\settings.xml" -t dfm-editor:local .
+```
+
+Container lokal starten und mit `Ctrl+C` beenden:
+
+```powershell
+docker run --rm --name dfm-editor -p 8082:8082 dfm-editor:local
+```
+
+Die Anwendung ist anschließend unter <http://localhost:8082> erreichbar. Für einen Server hinter einem Reverse-Proxy kann der Port nur lokal freigegeben werden:
+
+```powershell
+docker run -d --name dfm-editor --restart unless-stopped -p 127.0.0.1:8082:8082 dfm-editor:local
+docker stop dfm-editor
+docker rm dfm-editor
 ```
 
 Für den Bezug von `task-app-dfm-core` aus GitHub Packages ist ein Maven-Zugang mit Leserechten erforderlich. Das Repository ist im Backend-POM unter der Maven-Server-ID `github-core` eingetragen.
