@@ -6,6 +6,7 @@ import { StreamLanguage } from '@codemirror/language'
 import { EditorState } from '@codemirror/state'
 import { keymap } from '@codemirror/view'
 import { translate, type Locale } from '../i18n'
+import CopyButton from './CopyButton.vue'
 
 const props = defineProps<{ modelValue: string; locale: Locale }>()
 const emit = defineEmits<{
@@ -162,9 +163,17 @@ onBeforeUnmount(() => editor?.destroy())
       <button class="example-button" type="button" @click="emit('loadExample')">
         {{ translate(locale, 'loadExample') }}
       </button>
-      <button class="format-button" type="button" @click="prettify">
-        {{ translate(locale, locale === 'de' ? 'format' : 'prettify') }}
-      </button>
+      <div class="editor-format-actions">
+        <button class="format-button" type="button" @click="prettify">
+          {{ translate(locale, locale === 'de' ? 'format' : 'prettify') }}
+        </button>
+        <CopyButton
+          :text="modelValue"
+          :label="translate(locale, 'copySource')"
+          :success-message="translate(locale, 'sourceCopied')"
+          :error-message="translate(locale, 'sourceCopyFailed')"
+        />
+      </div>
     </div>
     <div ref="host" class="source-editor" :aria-label="translate(locale, 'editorLabel')" />
   </div>

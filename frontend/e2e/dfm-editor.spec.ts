@@ -109,6 +109,146 @@ test('exports a PNG using a localized download icon', async ({ page }) => {
     .toEqual(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
 })
 
+test('copies the current DFM source to the clipboard', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.clock.install()
+  await page.goto('/')
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1000)
+
+  const source = 'fact Umsatz {\n  Betrag;\n};\n'
+  await page.locator('.cm-content').fill(source)
+  const copyButton = page.getByRole('button', { name: 'DFM-Quelltext in die Zwischenablage kopieren' })
+  const feedback = page.locator('.source-editor-container').getByRole('status')
+  await expect(copyButton).toHaveAttribute('title', 'DFM-Quelltext in die Zwischenablage kopieren')
+  await expect(copyButton).toHaveText('')
+  await copyButton.click()
+  await expect(feedback).toHaveText('DFM-Quelltext in die Zwischenablage kopiert.')
+  await expect(copyButton.locator('.copy-success-icon')).toBeVisible()
+  await expect(copyButton).toHaveCSS('color', 'rgb(2, 122, 72)')
+  expect((await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g, '\n')).toBe(source)
+  await page.clock.fastForward(499)
+  await expect(copyButton.locator('.copy-success-icon')).toBeVisible()
+  await page.clock.fastForward(1)
+  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
+  await expect(feedback).toHaveText('')
+
+  await page.locator('.cm-content').fill('')
+  await expect(copyButton).toBeDisabled()
+  await expect(feedback).toHaveText('')
+})
+
+test('shows localized feedback when copying the DFM source fails', async ({ page }) => {
+  await page.clock.install()
+  await page.goto('/')
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1000)
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.reject(new Error('Clipboard access denied')) },
+    })
+  })
+
+  await page.getByRole('button', { name: 'Sprache auf Englisch umstellen' }).click()
+  const copyButton = page.getByRole('button', { name: 'Copy DFM source to clipboard' })
+  const feedback = page.locator('.source-editor-container').getByRole('status')
+  await expect(copyButton).toHaveAttribute('title', 'Copy DFM source to clipboard')
+  await copyButton.click()
+  await expect(feedback).toHaveText('Could not copy DFM source. Check your browser permissions.')
+  await expect(copyButton.locator('.copy-error-icon')).toBeVisible()
+  await expect(copyButton).toHaveCSS('color', 'rgb(180, 35, 24)')
+  await page.clock.fastForward(499)
+  await expect(copyButton.locator('.copy-error-icon')).toBeVisible()
+  await page.clock.fastForward(1)
+  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
+  await expect(feedback).toHaveText('')
+})
+
+test('restarts copy feedback on repeated clicks and clears it when the source changes', async ({ page }) => {
+  await page.clock.install()
+  await page.goto('/')
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1000)
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.resolve() },
+    })
+  })
+
+  const copyButton = page.getByRole('button', { name: 'DFM-Quelltext in die Zwischenablage kopieren' })
+  await copyButton.click()
+  await expect(copyButton.locator('.copy-success-icon')).toBeVisible()
+  await page.clock.fastForward(250)
+  await copyButton.click()
+  await page.clock.fastForward(250)
+  await expect(copyButton.locator('.copy-success-icon')).toBeVisible()
+  await page.clock.fastForward(250)
+  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
+
+  await copyButton.click()
+  await expect(copyButton.locator('.copy-success-icon')).toBeVisible()
+  await page.locator('.cm-content').fill('fact Changed;')
+  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
+  await expect(page.locator('.source-editor-container').getByRole('status')).toHaveText('')
+})
+
+test('copies notes with independent half-second feedback', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.clock.install()
+  await page.goto('/')
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1000)
+
+  const notes = page.getByRole('textbox', { name: 'Notizen zum Modell' })
+  const copyButton = page.getByRole('button', { name: 'Notizen in die Zwischenablage kopieren' })
+  const sourceButton = page.getByRole('button', { name: 'DFM-Quelltext in die Zwischenablage kopieren' })
+  const feedback = page.locator('.notes-actions').getByRole('status')
+  await expect(copyButton).toBeDisabled()
+  await notes.fill('Meine Notiz')
+  await copyButton.click()
+  await expect(feedback).toHaveText('Notizen in die Zwischenablage kopiert.')
+  await expect(copyButton.locator('.copy-success-icon')).toBeVisible()
+  await expect(copyButton).toHaveCSS('color', 'rgb(2, 122, 72)')
+  await expect(sourceButton.locator('.copy-default-icon')).toBeVisible()
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('Meine Notiz')
+  await page.clock.fastForward(499)
+  await expect(copyButton.locator('.copy-success-icon')).toBeVisible()
+  await page.clock.fastForward(1)
+  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
+  await expect(feedback).toHaveText('')
+
+  await copyButton.click()
+  await notes.fill('')
+  await expect(copyButton).toBeDisabled()
+  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
+  await expect(feedback).toHaveText('')
+})
+
+test('shows localized error feedback when copying notes fails', async ({ page }) => {
+  await page.clock.install()
+  await page.goto('/')
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1000)
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: () => Promise.reject(new Error('Clipboard access denied')) },
+    })
+  })
+
+  await page.getByRole('button', { name: 'Sprache auf Englisch umstellen' }).click()
+  await page.getByRole('textbox', { name: 'Model notes' }).fill('Notes')
+  const copyButton = page.getByRole('button', { name: 'Copy notes to clipboard' })
+  const feedback = page.locator('.notes-actions').getByRole('status')
+  await expect(copyButton).toHaveAttribute('title', 'Copy notes to clipboard')
+  await copyButton.click()
+  await expect(feedback).toHaveText('Could not copy notes. Check your browser permissions.')
+  await expect(copyButton.locator('.copy-error-icon')).toBeVisible()
+  await expect(copyButton).toHaveCSS('color', 'rgb(180, 35, 24)')
+  await page.clock.fastForward(499)
+  await expect(copyButton.locator('.copy-error-icon')).toBeVisible()
+  await page.clock.fastForward(1)
+  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
+  await expect(feedback).toHaveText('')
+})
+
 for (const scenario of scenarios) {
   test(`renders "${scenario.name}" readable and without overlaps`, async ({ page }) => {
     const requests = await mockParseApi(page, scenario.graph)

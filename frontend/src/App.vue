@@ -3,6 +3,7 @@ import { computed, defineAsyncComponent, onBeforeUnmount, ref, watch } from 'vue
 import packageInfo from '../package.json'
 import type { DfmGraph, ParseError } from './types'
 import { translate, type Locale } from './i18n'
+import CopyButton from './components/CopyButton.vue'
 
 const DfmGraphView = defineAsyncComponent(() => import('./components/DfmGraphView.vue'))
 const DfmSourceEditor = defineAsyncComponent(() => import('./components/DfmSourceEditor.vue'))
@@ -26,7 +27,6 @@ const locale = ref<Locale>('de')
 const graph = ref<DfmGraph | null>(null)
 const lastRenderedSource = ref<string | null>(null)
 const parseError = ref<ParseError | null>(null)
-const copyStatus = ref<'notesCopied' | 'notesCopyFailed' | null>(null)
 const isLoading = ref(false)
 const status = computed(() => {
   if (isLoading.value) return translate(locale.value, 'analyzing')
@@ -137,10 +137,6 @@ watch(source, () => {
   parseError.value = null
 })
 
-watch(notes, () => {
-  copyStatus.value = null
-})
-
 watch(locale, (selectedLocale) => {
   document.documentElement.lang = selectedLocale
   document.querySelector('meta[name="description"]')?.setAttribute(
@@ -148,15 +144,6 @@ watch(locale, (selectedLocale) => {
     translate(selectedLocale, 'appDescription'),
   )
 })
-
-async function copyNotes() {
-  try {
-    await navigator.clipboard.writeText(notes.value)
-    copyStatus.value = 'notesCopied'
-  } catch {
-    copyStatus.value = 'notesCopyFailed'
-  }
-}
 
 onBeforeUnmount(() => {
   requestController?.abort()
@@ -229,22 +216,12 @@ onBeforeUnmount(() => {
           <h2 id="notes-title">{{ translate(locale, 'notesTitle') }}</h2>
         </div>
         <div class="notes-actions">
-          <span v-if="copyStatus" class="notes-feedback" role="status">
-            {{ translate(locale, copyStatus) }}
-          </span>
-          <button
-            class="copy-notes-button"
-            type="button"
-            :disabled="!notes"
-            :aria-label="translate(locale, 'copyNotes')"
-            :title="translate(locale, 'copyNotes')"
-            @click="copyNotes"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="8" y="8" width="13" height="13" rx="2" />
-              <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />
-            </svg>
-          </button>
+          <CopyButton
+            :text="notes"
+            :label="translate(locale, 'copyNotes')"
+            :success-message="translate(locale, 'notesCopied')"
+            :error-message="translate(locale, 'notesCopyFailed')"
+          />
         </div>
       </div>
       <textarea
