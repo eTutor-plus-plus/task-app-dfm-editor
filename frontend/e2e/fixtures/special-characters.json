@@ -1,0 +1,80 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Bestellung",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "Menge"
+      ]
+    },
+    {
+      "id": "fact-0-descriptive-0",
+      "label": "Händler",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Kunde",
+      "label": "Kunde",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Stadt",
+      "label": "Stadt",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Land",
+      "label": "Land",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Größe",
+      "label": "Größe",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-Kunde",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-Kunde",
+      "target": "dimension-0-level-Stadt",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-Stadt",
+      "target": "dimension-0-level-Land",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-Kunde",
+      "target": "dimension-0-level-Größe",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

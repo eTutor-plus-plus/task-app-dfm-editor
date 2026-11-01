@@ -1,0 +1,132 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Claim",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "amount"
+      ]
+    },
+    {
+      "id": "fact-0-descriptive-0",
+      "label": "caseNumber",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-policy",
+      "label": "policy",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-rider",
+      "label": "rider",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-riderType",
+      "label": "riderType",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-coverage",
+      "label": "coverage",
+      "type": "LEVEL",
+      "optional": true,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-coverageGroup",
+      "label": "coverageGroup",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-holder",
+      "label": "holder",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-coHolder",
+      "label": "coHolder",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-policyNumber",
+      "label": "policyNumber",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-policy",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-policy",
+      "target": "dimension-0-level-rider",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-0-level-rider",
+      "target": "dimension-0-level-riderType",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-policy",
+      "target": "dimension-0-level-coverage",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-coverage",
+      "target": "dimension-0-level-coverageGroup",
+      "connectionType": "MULTIPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-policy",
+      "target": "dimension-0-level-holder",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-0-level-holder",
+      "target": "dimension-0-level-coHolder",
+      "connectionType": "MULTIPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-0-level-policy",
+      "target": "dimension-0-level-policyNumber",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

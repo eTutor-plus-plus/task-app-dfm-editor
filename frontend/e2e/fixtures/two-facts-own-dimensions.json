@@ -1,0 +1,174 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Sales",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "revenue"
+      ]
+    },
+    {
+      "id": "fact-0-descriptive-0",
+      "label": "salesperson",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "fact-1",
+      "label": "Returns",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "refundAmount",
+        "reason"
+      ]
+    },
+    {
+      "id": "dimension-0-level-day",
+      "label": "day",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-month",
+      "label": "month",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-year",
+      "label": "year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-week",
+      "label": "week",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-product",
+      "label": "product",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-category",
+      "label": "category",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-department",
+      "label": "department",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-brand",
+      "label": "brand",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-reason",
+      "label": "reason",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-reasonGroup",
+      "label": "reasonGroup",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-day",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-product",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-1",
+      "target": "dimension-2-level-reason",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-day",
+      "target": "dimension-0-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-month",
+      "target": "dimension-0-level-year",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-day",
+      "target": "dimension-0-level-week",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-week",
+      "target": "dimension-0-level-year",
+      "connectionType": "CONVERGENCE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-product",
+      "target": "dimension-1-level-category",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-category",
+      "target": "dimension-1-level-department",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-product",
+      "target": "dimension-1-level-brand",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-reason",
+      "target": "dimension-2-level-reasonGroup",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

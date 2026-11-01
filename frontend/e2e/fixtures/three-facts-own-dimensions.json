@@ -1,0 +1,138 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Orders",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "orderTotal"
+      ]
+    },
+    {
+      "id": "fact-1",
+      "label": "Shipments",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "weight",
+        "cost"
+      ]
+    },
+    {
+      "id": "fact-2",
+      "label": "Complaints",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "severity"
+      ]
+    },
+    {
+      "id": "dimension-0-level-customer",
+      "label": "customer",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-city",
+      "label": "city",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-country",
+      "label": "country",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-segment",
+      "label": "segment",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-carrier",
+      "label": "carrier",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-region",
+      "label": "region",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-topic",
+      "label": "topic",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area",
+      "label": "area",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-customer",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-1",
+      "target": "dimension-1-level-carrier",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-2",
+      "target": "dimension-2-level-topic",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-customer",
+      "target": "dimension-0-level-city",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-city",
+      "target": "dimension-0-level-country",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-customer",
+      "target": "dimension-0-level-segment",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-carrier",
+      "target": "dimension-1-level-region",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-topic",
+      "target": "dimension-2-level-area",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

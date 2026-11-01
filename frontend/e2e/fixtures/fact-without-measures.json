@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Empty",
+      "type": "FACT",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-day",
+      "label": "day",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-month",
+      "label": "month",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-day",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-day",
+      "target": "dimension-0-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

@@ -1,0 +1,450 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Fact1",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "measure1"
+      ]
+    },
+    {
+      "id": "fact-0-descriptive-0",
+      "label": "note1",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "fact-1",
+      "label": "Fact2",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "measure2"
+      ]
+    },
+    {
+      "id": "fact-1-descriptive-0",
+      "label": "note2",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "fact-2",
+      "label": "Fact3",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "measure3"
+      ]
+    },
+    {
+      "id": "fact-2-descriptive-0",
+      "label": "note3",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "fact-3",
+      "label": "Fact4",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "measure4"
+      ]
+    },
+    {
+      "id": "fact-3-descriptive-0",
+      "label": "note4",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "fact-4",
+      "label": "Fact5",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "measure5"
+      ]
+    },
+    {
+      "id": "fact-4-descriptive-0",
+      "label": "note5",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "fact-5",
+      "label": "Fact6",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "measure6"
+      ]
+    },
+    {
+      "id": "fact-5-descriptive-0",
+      "label": "note6",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-dim1",
+      "label": "dim1",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-group1",
+      "label": "group1",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-category1",
+      "label": "category1",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-alias1",
+      "label": "alias1",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-dim2",
+      "label": "dim2",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-group2",
+      "label": "group2",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-category2",
+      "label": "category2",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-alias2",
+      "label": "alias2",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-dim3",
+      "label": "dim3",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-group3",
+      "label": "group3",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-category3",
+      "label": "category3",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-alias3",
+      "label": "alias3",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-dim4",
+      "label": "dim4",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-group4",
+      "label": "group4",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-category4",
+      "label": "category4",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-alias4",
+      "label": "alias4",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-dim5",
+      "label": "dim5",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-group5",
+      "label": "group5",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-category5",
+      "label": "category5",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-alias5",
+      "label": "alias5",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-dim6",
+      "label": "dim6",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-group6",
+      "label": "group6",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-category6",
+      "label": "category6",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-alias6",
+      "label": "alias6",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-dim1",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-1",
+      "target": "fact-1-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-1",
+      "target": "dimension-1-level-dim2",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-2",
+      "target": "fact-2-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-2",
+      "target": "dimension-2-level-dim3",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-3",
+      "target": "fact-3-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-3",
+      "target": "dimension-3-level-dim4",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-4",
+      "target": "fact-4-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-4",
+      "target": "dimension-4-level-dim5",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-5",
+      "target": "fact-5-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-5",
+      "target": "dimension-5-level-dim6",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-dim1",
+      "target": "dimension-0-level-group1",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-group1",
+      "target": "dimension-0-level-category1",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-dim1",
+      "target": "dimension-0-level-alias1",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-dim2",
+      "target": "dimension-1-level-group2",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-group2",
+      "target": "dimension-1-level-category2",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-dim2",
+      "target": "dimension-1-level-alias2",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-dim3",
+      "target": "dimension-2-level-group3",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-group3",
+      "target": "dimension-2-level-category3",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-dim3",
+      "target": "dimension-2-level-alias3",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-dim4",
+      "target": "dimension-3-level-group4",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-group4",
+      "target": "dimension-3-level-category4",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-dim4",
+      "target": "dimension-3-level-alias4",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-dim5",
+      "target": "dimension-4-level-group5",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-group5",
+      "target": "dimension-4-level-category5",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-dim5",
+      "target": "dimension-4-level-alias5",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-dim6",
+      "target": "dimension-5-level-group6",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-group6",
+      "target": "dimension-5-level-category6",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-dim6",
+      "target": "dimension-5-level-alias6",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

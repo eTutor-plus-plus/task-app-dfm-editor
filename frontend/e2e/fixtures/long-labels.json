@@ -1,0 +1,94 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "InternationalShipmentTransaction",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "totalShippingCostInEuroCents",
+        "numberOfHandledContainers"
+      ]
+    },
+    {
+      "id": "fact-0-descriptive-0",
+      "label": "responsibleLogisticsCoordinator",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-destinationHarbourTerminal",
+      "label": "destinationHarbourTerminal",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-destinationMetropolitanArea",
+      "label": "destinationMetropolitanArea",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-destinationFederalState",
+      "label": "destinationFederalState",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-destinationCountryRegion",
+      "label": "destinationCountryRegion",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-terminalOperatingCompanyName",
+      "label": "terminalOperatingCompanyName",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-destinationHarbourTerminal",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-destinationHarbourTerminal",
+      "target": "dimension-0-level-destinationMetropolitanArea",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-destinationMetropolitanArea",
+      "target": "dimension-0-level-destinationFederalState",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-destinationFederalState",
+      "target": "dimension-0-level-destinationCountryRegion",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-destinationHarbourTerminal",
+      "target": "dimension-0-level-terminalOperatingCompanyName",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

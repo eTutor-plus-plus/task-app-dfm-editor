@@ -1,0 +1,18 @@
+fact Fact1 { measure1; {descriptive} note1; };
+fact Fact2 { measure2; {descriptive} note2; };
+fact Fact3 { measure3; {descriptive} note3; };
+fact Fact4 { measure4; {descriptive} note4; };
+fact Fact5 { measure5; {descriptive} note5; };
+fact Fact6 { measure6; {descriptive} note6; };
+dimension dim1 { dim1 - group1 - category1; dim1 - alias1; };
+dimension dim2 { dim2 - group2 - category2; dim2 - alias2; };
+dimension dim3 { dim3 - group3 - category3; dim3 - alias3; };
+dimension dim4 { dim4 - group4 - category4; dim4 - alias4; };
+dimension dim5 { dim5 - group5 - category5; dim5 - alias5; };
+dimension dim6 { dim6 - group6 - category6; dim6 - alias6; };
+Fact1 - dim1;
+Fact2 - dim2;
+Fact3 - dim3;
+Fact4 - dim4;
+Fact5 - dim5;
+Fact6 - dim6;

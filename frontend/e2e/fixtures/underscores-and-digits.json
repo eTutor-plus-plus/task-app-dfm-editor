@@ -1,0 +1,54 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "fact_2024",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "amount_eur"
+      ]
+    },
+    {
+      "id": "dimension-0-level-level_1",
+      "label": "level_1",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-level_2",
+      "label": "level_2",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-level_3",
+      "label": "level_3",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-level_1",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-level_1",
+      "target": "dimension-0-level-level_2",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-level_2",
+      "target": "dimension-0-level-level_3",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

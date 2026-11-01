@@ -1,0 +1,67 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Measurement",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "value"
+      ]
+    },
+    {
+      "id": "dimension-0-level-dim1",
+      "label": "dim1",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-dim1Level1",
+      "label": "dim1Level1",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-dim1Level2",
+      "label": "dim1Level2",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-dim1Name",
+      "label": "dim1Name",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-dim1",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-dim1",
+      "target": "dimension-0-level-dim1Level1",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-dim1Level1",
+      "target": "dimension-0-level-dim1Level2",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-dim1",
+      "target": "dimension-0-level-dim1Name",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

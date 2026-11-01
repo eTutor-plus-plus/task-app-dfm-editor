@@ -1,0 +1,15 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Standalone",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "amount",
+        "count"
+      ]
+    }
+  ],
+  "edges": []
+}

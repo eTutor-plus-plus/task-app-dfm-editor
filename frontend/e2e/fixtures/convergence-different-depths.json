@@ -1,0 +1,99 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Sales",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "revenue"
+      ]
+    },
+    {
+      "id": "dimension-0-level-time",
+      "label": "time",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-day",
+      "label": "day",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-month",
+      "label": "month",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-quarter",
+      "label": "quarter",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-year",
+      "label": "year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-calendarWeek",
+      "label": "calendarWeek",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-time",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-time",
+      "target": "dimension-0-level-day",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-day",
+      "target": "dimension-0-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-month",
+      "target": "dimension-0-level-quarter",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-quarter",
+      "target": "dimension-0-level-year",
+      "connectionType": "CONVERGENCE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-day",
+      "target": "dimension-0-level-calendarWeek",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-calendarWeek",
+      "target": "dimension-0-level-year",
+      "connectionType": "CONVERGENCE",
+      "optional": false
+    }
+  ]
+}

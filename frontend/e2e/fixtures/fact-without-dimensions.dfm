@@ -1,0 +1,1 @@
+fact Standalone { amount; count; };

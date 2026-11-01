@@ -1,0 +1,966 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Operations",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "count",
+        "duration",
+        "cost"
+      ]
+    },
+    {
+      "id": "fact-0-descriptive-0",
+      "label": "responsible",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-area1",
+      "label": "area1",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-area1A",
+      "label": "area1A",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-area1B",
+      "label": "area1B",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-area1C",
+      "label": "area1C",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-area1Note",
+      "label": "area1Note",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-area1Optional",
+      "label": "area1Optional",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-area1OptionalChild",
+      "label": "area1OptionalChild",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-area1D",
+      "label": "area1D",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-area1Label",
+      "label": "area1Label",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-area2",
+      "label": "area2",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-area2A",
+      "label": "area2A",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-area2B",
+      "label": "area2B",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-area2C",
+      "label": "area2C",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-area2Note",
+      "label": "area2Note",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-area2Optional",
+      "label": "area2Optional",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-area2OptionalChild",
+      "label": "area2OptionalChild",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-area2D",
+      "label": "area2D",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-area2Label",
+      "label": "area2Label",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area3",
+      "label": "area3",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area3A",
+      "label": "area3A",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area3B",
+      "label": "area3B",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area3C",
+      "label": "area3C",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area3Note",
+      "label": "area3Note",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area3Optional",
+      "label": "area3Optional",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area3OptionalChild",
+      "label": "area3OptionalChild",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area3D",
+      "label": "area3D",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-area3Label",
+      "label": "area3Label",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-area4",
+      "label": "area4",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-area4A",
+      "label": "area4A",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-area4B",
+      "label": "area4B",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-area4C",
+      "label": "area4C",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-area4Note",
+      "label": "area4Note",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-area4Optional",
+      "label": "area4Optional",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-area4OptionalChild",
+      "label": "area4OptionalChild",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-area4D",
+      "label": "area4D",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-area4Label",
+      "label": "area4Label",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-area5",
+      "label": "area5",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-area5A",
+      "label": "area5A",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-area5B",
+      "label": "area5B",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-area5C",
+      "label": "area5C",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-area5Note",
+      "label": "area5Note",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-area5Optional",
+      "label": "area5Optional",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-area5OptionalChild",
+      "label": "area5OptionalChild",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-area5D",
+      "label": "area5D",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-area5Label",
+      "label": "area5Label",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-area6",
+      "label": "area6",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-area6A",
+      "label": "area6A",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-area6B",
+      "label": "area6B",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-area6C",
+      "label": "area6C",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-area6Note",
+      "label": "area6Note",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-area6Optional",
+      "label": "area6Optional",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-area6OptionalChild",
+      "label": "area6OptionalChild",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-area6D",
+      "label": "area6D",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-area6Label",
+      "label": "area6Label",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-area7",
+      "label": "area7",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-area7A",
+      "label": "area7A",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-area7B",
+      "label": "area7B",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-area7C",
+      "label": "area7C",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-area7Note",
+      "label": "area7Note",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-area7Optional",
+      "label": "area7Optional",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-area7OptionalChild",
+      "label": "area7OptionalChild",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-area7D",
+      "label": "area7D",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-area7Label",
+      "label": "area7Label",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-area8",
+      "label": "area8",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-area8A",
+      "label": "area8A",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-area8B",
+      "label": "area8B",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-area8C",
+      "label": "area8C",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-area8Note",
+      "label": "area8Note",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-area8Optional",
+      "label": "area8Optional",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-area8OptionalChild",
+      "label": "area8OptionalChild",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-area8D",
+      "label": "area8D",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-area8Label",
+      "label": "area8Label",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-area1",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-area2",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-2-level-area3",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-3-level-area4",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-4-level-area5",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-5-level-area6",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-6-level-area7",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-7-level-area8",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-area1",
+      "target": "dimension-0-level-area1A",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-area1A",
+      "target": "dimension-0-level-area1B",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-area1B",
+      "target": "dimension-0-level-area1C",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-area1A",
+      "target": "dimension-0-level-area1Note",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-area1",
+      "target": "dimension-0-level-area1Optional",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-0-level-area1Optional",
+      "target": "dimension-0-level-area1OptionalChild",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-area1",
+      "target": "dimension-0-level-area1D",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-area1",
+      "target": "dimension-0-level-area1Label",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-area2",
+      "target": "dimension-1-level-area2A",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-area2A",
+      "target": "dimension-1-level-area2B",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-area2B",
+      "target": "dimension-1-level-area2C",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-area2A",
+      "target": "dimension-1-level-area2Note",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-area2",
+      "target": "dimension-1-level-area2Optional",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-1-level-area2Optional",
+      "target": "dimension-1-level-area2OptionalChild",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-area2",
+      "target": "dimension-1-level-area2D",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-area2",
+      "target": "dimension-1-level-area2Label",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-area3",
+      "target": "dimension-2-level-area3A",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-area3A",
+      "target": "dimension-2-level-area3B",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-area3B",
+      "target": "dimension-2-level-area3C",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-area3A",
+      "target": "dimension-2-level-area3Note",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-area3",
+      "target": "dimension-2-level-area3Optional",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-2-level-area3Optional",
+      "target": "dimension-2-level-area3OptionalChild",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-area3",
+      "target": "dimension-2-level-area3D",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-area3",
+      "target": "dimension-2-level-area3Label",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-area4",
+      "target": "dimension-3-level-area4A",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-area4A",
+      "target": "dimension-3-level-area4B",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-area4B",
+      "target": "dimension-3-level-area4C",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-area4A",
+      "target": "dimension-3-level-area4Note",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-area4",
+      "target": "dimension-3-level-area4Optional",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-3-level-area4Optional",
+      "target": "dimension-3-level-area4OptionalChild",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-area4",
+      "target": "dimension-3-level-area4D",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-area4",
+      "target": "dimension-3-level-area4Label",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-area5",
+      "target": "dimension-4-level-area5A",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-area5A",
+      "target": "dimension-4-level-area5B",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-area5B",
+      "target": "dimension-4-level-area5C",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-area5A",
+      "target": "dimension-4-level-area5Note",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-area5",
+      "target": "dimension-4-level-area5Optional",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-4-level-area5Optional",
+      "target": "dimension-4-level-area5OptionalChild",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-area5",
+      "target": "dimension-4-level-area5D",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-4-level-area5",
+      "target": "dimension-4-level-area5Label",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-area6",
+      "target": "dimension-5-level-area6A",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-area6A",
+      "target": "dimension-5-level-area6B",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-area6B",
+      "target": "dimension-5-level-area6C",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-area6A",
+      "target": "dimension-5-level-area6Note",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-area6",
+      "target": "dimension-5-level-area6Optional",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-5-level-area6Optional",
+      "target": "dimension-5-level-area6OptionalChild",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-area6",
+      "target": "dimension-5-level-area6D",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-5-level-area6",
+      "target": "dimension-5-level-area6Label",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-6-level-area7",
+      "target": "dimension-6-level-area7A",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-6-level-area7A",
+      "target": "dimension-6-level-area7B",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-6-level-area7B",
+      "target": "dimension-6-level-area7C",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-6-level-area7A",
+      "target": "dimension-6-level-area7Note",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-6-level-area7",
+      "target": "dimension-6-level-area7Optional",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-6-level-area7Optional",
+      "target": "dimension-6-level-area7OptionalChild",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-6-level-area7",
+      "target": "dimension-6-level-area7D",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-6-level-area7",
+      "target": "dimension-6-level-area7Label",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-7-level-area8",
+      "target": "dimension-7-level-area8A",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-7-level-area8A",
+      "target": "dimension-7-level-area8B",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-7-level-area8B",
+      "target": "dimension-7-level-area8C",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-7-level-area8A",
+      "target": "dimension-7-level-area8Note",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-7-level-area8",
+      "target": "dimension-7-level-area8Optional",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-7-level-area8Optional",
+      "target": "dimension-7-level-area8OptionalChild",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-7-level-area8",
+      "target": "dimension-7-level-area8D",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-7-level-area8",
+      "target": "dimension-7-level-area8Label",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

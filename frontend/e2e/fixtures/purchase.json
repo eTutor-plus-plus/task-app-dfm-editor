@@ -1,0 +1,425 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Purchase",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "quantity",
+        "price"
+      ]
+    },
+    {
+      "id": "fact-0-descriptive-0",
+      "label": "accountHandler",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-customer",
+      "label": "customer",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-city",
+      "label": "city",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-country",
+      "label": "country",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-zipCode",
+      "label": "zipCode",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-cityName",
+      "label": "cityName",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-ageGroup",
+      "label": "ageGroup",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-customerName",
+      "label": "customerName",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-payment",
+      "label": "payment",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-moneyTransferPaymentId",
+      "label": "moneyTransferPaymentId",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-bank",
+      "label": "bank",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-accountType",
+      "label": "accountType",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-creditCardPaymentId",
+      "label": "creditCardPaymentId",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-creditCardCompany",
+      "label": "creditCardCompany",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-creditCardType",
+      "label": "creditCardType",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-paymentType",
+      "label": "paymentType",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-paymentDateTime",
+      "label": "paymentDateTime",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-day",
+      "label": "day",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-month",
+      "label": "month",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-year",
+      "label": "year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-purchaseDateTime",
+      "label": "purchaseDateTime",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-day",
+      "label": "day",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-month",
+      "label": "month",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-year",
+      "label": "year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-calendarWeek",
+      "label": "calendarWeek",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-product",
+      "label": "product",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-brand",
+      "label": "brand",
+      "type": "LEVEL",
+      "optional": true,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-category",
+      "label": "category",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-subDepartment",
+      "label": "subDepartment",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-primaryDepartment",
+      "label": "primaryDepartment",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-secondaryDepartment",
+      "label": "secondaryDepartment",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-customer",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-payment",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-2-level-purchaseDateTime",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-3-level-product",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-customer",
+      "target": "dimension-0-level-city",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-city",
+      "target": "dimension-0-level-country",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-city",
+      "target": "dimension-0-level-zipCode",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-city",
+      "target": "dimension-0-level-cityName",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-customer",
+      "target": "dimension-0-level-ageGroup",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-0-level-customer",
+      "target": "dimension-0-level-customerName",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-payment",
+      "target": "dimension-1-level-moneyTransferPaymentId",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-1-level-moneyTransferPaymentId",
+      "target": "dimension-1-level-bank",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-moneyTransferPaymentId",
+      "target": "dimension-1-level-accountType",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-payment",
+      "target": "dimension-1-level-creditCardPaymentId",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-1-level-creditCardPaymentId",
+      "target": "dimension-1-level-creditCardCompany",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-creditCardPaymentId",
+      "target": "dimension-1-level-creditCardType",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-payment",
+      "target": "dimension-1-level-paymentType",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-payment",
+      "target": "dimension-1-level-paymentDateTime",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-1-level-paymentDateTime",
+      "target": "dimension-1-level-day",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-day",
+      "target": "dimension-1-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-1-level-month",
+      "target": "dimension-1-level-year",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-purchaseDateTime",
+      "target": "dimension-2-level-day",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-day",
+      "target": "dimension-2-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-month",
+      "target": "dimension-2-level-year",
+      "connectionType": "CONVERGENCE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-day",
+      "target": "dimension-2-level-calendarWeek",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-2-level-calendarWeek",
+      "target": "dimension-2-level-year",
+      "connectionType": "CONVERGENCE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-product",
+      "target": "dimension-3-level-brand",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-brand",
+      "target": "dimension-3-level-category",
+      "connectionType": "MULTIPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-product",
+      "target": "dimension-3-level-subDepartment",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-3-level-subDepartment",
+      "target": "dimension-3-level-primaryDepartment",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-3-level-subDepartment",
+      "target": "dimension-3-level-secondaryDepartment",
+      "connectionType": "MULTIPLE",
+      "optional": true
+    }
+  ]
+}

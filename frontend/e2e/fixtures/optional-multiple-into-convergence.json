@@ -1,0 +1,73 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Sales",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "revenue"
+      ]
+    },
+    {
+      "id": "dimension-0-level-product",
+      "label": "product",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-brand",
+      "label": "brand",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-segment",
+      "label": "segment",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-category",
+      "label": "category",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-product",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-product",
+      "target": "dimension-0-level-brand",
+      "connectionType": "SIMPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-0-level-brand",
+      "target": "dimension-0-level-segment",
+      "connectionType": "MULTIPLE",
+      "optional": true
+    },
+    {
+      "source": "dimension-0-level-product",
+      "target": "dimension-0-level-category",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-category",
+      "target": "dimension-0-level-segment",
+      "connectionType": "MULTIPLE",
+      "optional": true
+    }
+  ]
+}

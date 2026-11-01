@@ -1,0 +1,100 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Purchase",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "quantity",
+        "price"
+      ]
+    },
+    {
+      "id": "fact-0-descriptive-0",
+      "label": "accountHandler",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-purchaseDateTime",
+      "label": "purchaseDateTime",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-day",
+      "label": "day",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-month",
+      "label": "month",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-year",
+      "label": "year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-calendarWeek",
+      "label": "calendarWeek",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-purchaseDateTime",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-purchaseDateTime",
+      "target": "dimension-0-level-day",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-day",
+      "target": "dimension-0-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-month",
+      "target": "dimension-0-level-year",
+      "connectionType": "CONVERGENCE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-day",
+      "target": "dimension-0-level-calendarWeek",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-calendarWeek",
+      "target": "dimension-0-level-year",
+      "connectionType": "CONVERGENCE",
+      "optional": false
+    }
+  ]
+}

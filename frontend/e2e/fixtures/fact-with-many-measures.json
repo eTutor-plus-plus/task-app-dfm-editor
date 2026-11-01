@@ -1,0 +1,52 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Telemetry",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "measurementNumber1",
+        "measurementNumber2",
+        "measurementNumber3",
+        "measurementNumber4",
+        "measurementNumber5",
+        "measurementNumber6",
+        "measurementNumber7",
+        "measurementNumber8",
+        "measurementNumber9",
+        "measurementNumber10",
+        "measurementNumber11",
+        "measurementNumber12"
+      ]
+    },
+    {
+      "id": "dimension-0-level-device",
+      "label": "device",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-model",
+      "label": "model",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-device",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-device",
+      "target": "dimension-0-level-model",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}

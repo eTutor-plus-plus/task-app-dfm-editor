@@ -1,0 +1,158 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Visit",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "duration"
+      ]
+    },
+    {
+      "id": "dimension-0-level-visitor",
+      "label": "visitor",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-age",
+      "label": "age",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-gender",
+      "label": "gender",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-country",
+      "label": "country",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-language",
+      "label": "language",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-browser",
+      "label": "browser",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-device",
+      "label": "device",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-screenSize",
+      "label": "screenSize",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-referrer",
+      "label": "referrer",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-campaign",
+      "label": "campaign",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-landingPage",
+      "label": "landingPage",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-visitor",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-age",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-gender",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-country",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-language",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-browser",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-device",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-screenSize",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-referrer",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-campaign",
+      "connectionType": "SIMPLE",
+      "optional": false
+    },
+    {
+      "source": "dimension-0-level-visitor",
+      "target": "dimension-0-level-landingPage",
+      "connectionType": "SIMPLE",
+      "optional": false
+    }
+  ]
+}
