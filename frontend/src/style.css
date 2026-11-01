@@ -445,14 +445,6 @@ h2 {
   stroke-width: 1.5;
 }
 
-.graph-node {
-  cursor: grab;
-}
-
-.graph-node:active {
-  cursor: grabbing;
-}
-
 .graph-node rect {
   fill: #fff;
   stroke: #98a2b3;

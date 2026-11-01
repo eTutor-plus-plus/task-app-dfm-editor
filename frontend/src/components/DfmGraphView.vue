@@ -5,7 +5,6 @@ import {
   forceManyBody,
   forceSimulation,
   select,
-  drag,
   zoom,
   zoomIdentity,
   type Force,
@@ -13,7 +12,7 @@ import {
   type SimulationNodeDatum,
   type ZoomBehavior,
 } from 'd3'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import type { DfmGraph, DfmNode } from '../types'
 import { translate, type Locale, type TranslationKey } from '../i18n'
 
@@ -27,6 +26,10 @@ interface SimLink extends SimulationLinkDatum<SimNode> {
   hidden?: boolean
 }
 
+function factHalfHeight(node: SimNode) {
+  return (35 + node.details.length * 20) / 2
+}
+
 function collisionRadius(node: SimNode) {
   if (node.type === 'FACT') return Math.max(labelWidth(node) / 2 + 12, (35 + node.details.length * 20) / 2 + 20)
   if (node.type === 'LEVEL') return Math.max(34, labelWidth(node) / 2 + 10)
@@ -36,7 +39,6 @@ function collisionRadius(node: SimNode) {
 const props = defineProps<{ graph: DfmGraph | null; locale: Locale }>()
 const svgHost = ref<SVGSVGElement | null>(null)
 const exportError = ref<TranslationKey | null>(null)
-let simulation: ReturnType<typeof forceSimulation<SimNode>> | undefined
 let zoomBehavior: ZoomBehavior<SVGSVGElement, unknown> | undefined
 let initialZoomTransform = zoomIdentity
 
@@ -160,10 +162,16 @@ async function exportPng() {
   }
 }
 
+const MAX_FACT_WIDTH = 320
+
+function truncate(text: string, maxChars: number) {
+  return text.length > maxChars ? `${text.slice(0, Math.max(1, maxChars - 1))}…` : text
+}
+
 function labelWidth(node: SimNode) {
   if (node.type === 'FACT') {
     const longest = Math.max(node.label.length * 8, ...node.details.map((detail) => detail.length * 6.5 + 20))
-    return Math.max(130, longest + 24)
+    return Math.min(MAX_FACT_WIDTH, Math.max(130, longest + 24))
   }
   if (node.type === 'DESCRIPTIVE') return Math.max(110, node.label.length * 6.6 + 12)
   return Math.max(44, node.label.length * 6.6 + 12)
@@ -378,7 +386,6 @@ function placeRadialTrees(nodes: SimNode[], edges: DfmGraph['edges']) {
 
 function renderGraph(graph: DfmGraph | null) {
   if (!svgHost.value) return
-  simulation?.stop()
 
   const svg = select(svgHost.value)
   svg.on('.zoom', null)
@@ -390,7 +397,6 @@ function renderGraph(graph: DfmGraph | null) {
   const width = 900
   const height = 600
   const nodes: SimNode[] = graph.nodes.map((node) => ({ ...node }))
-  const facts = nodes.filter((node) => node.type === 'FACT')
   placeRadialTrees(nodes, graph.edges)
   const links: SimLink[] = graph.edges.map((edge) => ({ ...edge }))
   const layoutLinks = [...links]
@@ -445,6 +451,25 @@ function renderGraph(graph: DfmGraph | null) {
   }
   edgeAvoidance.initialize = (nodes) => {
     simulationNodes = nodes
+  }
+
+  // Facts are wide, flat boxes: a circular collision radius would keep neighbours far away
+  // above and below them, so other nodes are pushed out of the rectangle instead.
+  const factBoxAvoidance: Force<SimNode, SimLink> = () => {
+    for (const fact of simulationNodes.filter((node) => node.type === 'FACT')) {
+      for (const node of simulationNodes) {
+        if (node.type === 'FACT') continue
+        const offsetX = (node.x ?? 0) - (fact.x ?? 0)
+        const offsetY = (node.y ?? 0) - (fact.y ?? 0)
+        const reachX = labelWidth(fact) / 2 + labelWidth(node) / 2 + 8
+        const reachY = factHalfHeight(fact) + 34
+        const overlapX = reachX - Math.abs(offsetX)
+        const overlapY = reachY - Math.abs(offsetY)
+        if (overlapX <= 0 || overlapY <= 0) continue
+        if (overlapY < overlapX) node.y = (node.y ?? 0) + (offsetY < 0 ? -overlapY : overlapY)
+        else node.x = (node.x ?? 0) + (offsetX < 0 ? -overlapX : overlapX)
+      }
+    }
   }
 
   svg.append('defs')
@@ -506,37 +531,43 @@ function renderGraph(graph: DfmGraph | null) {
       const measureCount = node.details.length
       const nodeHeight = 35 + measureCount * 20
 
+      const half = Math.max(60, labelWidth(node) / 2)
+
       group.append('rect')
-        .attr('x', -60)
+        .attr('x', -half)
         .attr('y', -nodeHeight / 2)
-        .attr('width', 120)
+        .attr('width', half * 2)
         .attr('height', nodeHeight)
         .attr('rx', 10)
       group.append('text')
         .attr('class', 'box-label')
         .attr('text-anchor', 'middle')
         .attr('y', -(10 + measureCount * 20) / 2)
+        .text(truncate(node.label, Math.floor((half * 2 - 24) / 8)))
+        .append('title')
         .text(node.label)
       group.append('line')
         .attr('class', 'fact-divider')
-        .attr('x1', -60)
+        .attr('x1', -half)
         .attr('y1', -(50 + measureCount * 20) / 2 + 30)
-        .attr('x2', 60)
+        .attr('x2', half)
         .attr('y2', -(50 + measureCount * 20) / 2 + 30)
 
       node.details.forEach((measure, index) => {
         const measureY = -nodeHeight / 2 + 40 + index * 20
         group.append('text')
           .attr('class', 'measure-label')
-          .attr('x', -45)
+          .attr('x', -half + 15)
           .attr('y', measureY)
+          .text(truncate(measure, Math.floor((half * 2 - 35) / 6.5)))
+          .append('title')
           .text(measure)
         if (index < measureCount - 1) {
           group.append('line')
             .attr('class', 'fact-divider')
-            .attr('x1', -50)
+            .attr('x1', -half + 10)
             .attr('y1', measureY + 5)
-            .attr('x2', 50)
+            .attr('x2', half - 10)
             .attr('y2', measureY + 5)
         }
       })
@@ -627,21 +658,21 @@ function renderGraph(graph: DfmGraph | null) {
     nodeSelection.attr('transform', (node) => `translate(${node.x ?? 0},${node.y ?? 0})`)
   }
 
-  simulation = forceSimulation<SimNode>(nodes)
+  // the layout is computed once and the diagram is static, only the view can be zoomed and panned
+  forceSimulation<SimNode>(nodes)
     .force('link', forceLink<SimNode, SimLink>(layoutLinks)
       .id((node) => node.id)
       .distance((link) => initialDistances.get(link) ?? 90)
       .strength(0.25))
     .force('charge', forceManyBody<SimNode>().strength(-60))
     .force('collision', forceCollide<SimNode>()
-      .radius(collisionRadius)
+      .radius((node) => node.type === 'FACT' ? factHalfHeight(node) + 20 : collisionRadius(node))
       .iterations(3))
+    .force('factBox', factBoxAvoidance)
     .force('edgeAvoidance', edgeAvoidance)
-    .on('tick', updatePositions)
-
-  simulation.stop()
-  simulation.alpha(0.4)
-  simulation.tick(200)
+    .stop()
+    .alpha(0.4)
+    .tick(200)
   updatePositions()
 
   const bounds = content.node()?.getBBox()
@@ -658,31 +689,10 @@ function renderGraph(graph: DfmGraph | null) {
       .translate(-(bounds.x + bounds.width / 2), -(bounds.y + bounds.height / 2))
     svg.call(zoomBehavior.transform, initialZoomTransform)
   }
-
-  nodeSelection.call(
-    drag<SVGGElement, SimNode>()
-      .on('start', (event, node) => {
-        if (!event.active) simulation?.alphaTarget(0.25).restart()
-        node.fx = node.x
-        node.fy = node.y
-      })
-      .on('drag', (event, node) => {
-        node.fx = event.x
-        node.fy = event.y
-      })
-      .on('end', (event, node) => {
-        if (!event.active) simulation?.alphaTarget(0)
-        if (!facts.includes(node)) {
-          node.fx = null
-          node.fy = null
-        }
-      }),
-  )
 }
 
 watch(() => props.graph, renderGraph, { deep: true })
 onMounted(() => renderGraph(props.graph))
-onBeforeUnmount(() => simulation?.stop())
 </script>
 
 <template>
