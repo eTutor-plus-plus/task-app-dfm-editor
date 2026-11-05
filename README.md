@@ -10,7 +10,7 @@ Eigenständiger browserbasierter Editor zum Eingeben und Visualisieren von Dimen
 
 Im Entwicklungsmodus läuft das Frontend mit Vite auf Port 5173 und leitet `/api` an das Backend auf Port 8082 weiter. Für den Produktions-Build werden die Frontend-Dateien in die Spring-Boot-Anwendung kopiert.
 
-Der Editor unterstützt Zeilenkommentare mit `//` (Syntax-Highlighting, Umschalten mit `Strg+/`; die Formatierung erhält Kommentare). Kommentare werden vom Core-Parser ab Version 1.3.0 ignoriert.
+Der Editor unterstützt Zeilenkommentare mit `//` (Syntax-Highlighting, Umschalten mit `Strg+/`; die Formatierung erhält Kommentare) und Beschreibungen an Hierarchie-Verbindungen, z. B. `customer -[customercity]- city` (auch `=[text]=` und `-[text]->`) sowie an Fakt-Dimension-Verbindungen, z. B. `Sales -[soldat]- Time`. Beschreibungen werden als Beschriftung an der Kante dargestellt (bei Fakt-Dimension-Verbindungen an der Kante vom Fakt zum ersten Level der Dimension). Beides wird vom Core-Parser ab Version 1.4.0 unterstützt.
 
 ## Voraussetzungen
 

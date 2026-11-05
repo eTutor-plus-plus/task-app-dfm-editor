@@ -22,6 +22,7 @@ const dfmLanguage = StreamLanguage.define({
     if (stream.eatSpace()) return null
     if (stream.match(/\/\/.*/)) return 'comment'
     if (stream.match(/\b(?:fact|dimension|descriptive)\b/i)) return 'keyword'
+    if (stream.match(/\[[A-Za-z0-9_]*\]/)) return 'string'
     if (stream.match(/->|[-=]/)) return 'operator'
     if (stream.match(/[{}();]/)) return 'bracket'
     if (stream.match(/[A-Za-z0-9_]+/)) return 'variableName'
@@ -35,7 +36,7 @@ function prettifyDfm(source: string) {
   const tokens: string[] = []
   const commentOnOwnLine = new Set<number>()
   let previousEnd = 0
-  for (const match of source.matchAll(/\/\/[^\n]*|->|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[{}();=,-]|(?:(?!\/\/)[^\s{}();=,-])+/g)) {
+  for (const match of source.matchAll(/\/\/[^\n]*|[-=]\[[^\s[\]]*\](?:->|-|=)|->|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[{}();=,-]|(?:(?!\/\/)[^\s{}();=,-])+/g)) {
     if (match[0].startsWith('//')) {
       const gap = source.slice(previousEnd, match.index)
       if (tokens.length === 0 || gap.includes('\n')) commentOnOwnLine.add(tokens.length)
@@ -110,7 +111,7 @@ function prettifyDfm(source: string) {
       continue
     }
 
-    if (token === '-' || token === '=' || token === '->') {
+    if (token === '-' || token === '=' || token === '->' || /^[-=]\[[^\s[\]]*\](?:->|-|=)$/.test(token)) {
       trimTrailingSpaces()
       output += ` ${token} `
       continue

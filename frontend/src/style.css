@@ -412,6 +412,15 @@ h2 {
   stroke-width: 1.5;
 }
 
+.edge-label {
+  fill: #344054;
+  font-size: 12px;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  pointer-events: none;
+}
+
 .graph-node rect {
   fill: #fff;
   stroke: #98a2b3;

@@ -10,6 +10,6 @@ public record DfmGraphDto(List<Node> nodes, List<Edge> edges) {
     public record Node(String id, String label, NodeType type, boolean optional, List<String> details) {
     }
 
-    public record Edge(String source, String target, String connectionType, boolean optional) {
+    public record Edge(String source, String target, String connectionType, boolean optional, String label) {
     }
 }

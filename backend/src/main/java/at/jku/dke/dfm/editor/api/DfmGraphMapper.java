@@ -19,7 +19,7 @@ public class DfmGraphMapper {
             .toList();
         var edges = graph.edges().stream()
             .map(edge -> new DfmGraphDto.Edge(edge.source(), edge.target(), edge.connectionType().name(),
-                edge.optional()))
+                edge.optional(), edge.label()))
             .toList();
         return new DfmGraphDto(nodes, edges);
     }

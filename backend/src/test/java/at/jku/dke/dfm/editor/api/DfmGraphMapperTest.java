@@ -61,6 +61,36 @@ class DfmGraphMapperTest {
     }
 
     @Test
+    void mapsConnectionLabelsToEdges() {
+        var elements = new DfmParser().parse("""
+            fact Sales { Revenue; };
+            dimension Customer { customer -[customercity]- city; };
+            Sales - Customer;
+            """);
+
+        var graph = new DfmGraphMapper().map(elements);
+
+        assertTrue(graph.edges().stream().anyMatch(edge -> "customercity".equals(edge.label())));
+        assertEquals(1, graph.edges().stream().filter(edge -> edge.label() != null).count());
+    }
+
+    @Test
+    void mapsFactDimensionConnectionLabelToEdgeFromFact() {
+        var elements = new DfmParser().parse("""
+            fact Sales { Revenue; };
+            dimension Time { day - month; };
+            Sales -[soldat]- Time;
+            """);
+
+        var graph = new DfmGraphMapper().map(elements);
+
+        var labeled = graph.edges().stream().filter(edge -> edge.label() != null).toList();
+        assertEquals(1, labeled.size());
+        assertEquals("soldat", labeled.get(0).label());
+        assertTrue(hasEdge(graph, "Sales", "day"));
+    }
+
+    @Test
     void connectsFactOnlyToFirstHierarchy() {
         var elements = new DfmParser().parse("""
             fact Sales { Revenue; };

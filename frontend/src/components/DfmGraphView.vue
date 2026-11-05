@@ -23,11 +23,22 @@ interface SimLink extends SimulationLinkDatum<SimNode> {
   target: string | SimNode
   connectionType: string
   optional: boolean
+  label?: string | null
   hidden?: boolean
 }
 
 function factHalfHeight(node: SimNode) {
   return (35 + node.details.length * 20) / 2
+}
+
+// distance from the center of a node to its border in the direction (unitX, unitY)
+function borderDistance(node: SimNode, unitX: number, unitY: number) {
+  if (node.type === 'LEVEL') return 10
+  const halfWidth = node.type === 'FACT' ? labelWidth(node) / 2 : 50
+  const halfHeight = node.type === 'FACT' ? factHalfHeight(node) : 10
+  const horizontal = Math.abs(unitX) < 1e-9 ? Infinity : halfWidth / Math.abs(unitX)
+  const vertical = Math.abs(unitY) < 1e-9 ? Infinity : halfHeight / Math.abs(unitY)
+  return Math.min(horizontal, vertical)
 }
 
 function collisionRadius(node: SimNode) {
@@ -516,6 +527,13 @@ function renderGraph(graph: DfmGraph | null) {
       .data(link.optional ? [0] : [])
       .join('line')
       .attr('class', 'optional-edge-marker')
+
+    group.selectAll<SVGTextElement, string>('text.edge-label')
+      .data(link.label ? [link.label] : [])
+      .join('text')
+      .attr('class', 'edge-label')
+      .attr('text-anchor', 'middle')
+      .text((label) => label)
   })
 
   const nodeSelection = content.append('g')
@@ -653,6 +671,38 @@ function renderGraph(graph: DfmGraph | null) {
         .attr('y1', middleY + perpendicularY * 5)
         .attr('x2', middleX - perpendicularX * 5)
         .attr('y2', middleY - perpendicularY * 5)
+
+      // the label belongs to the visible part of the edge (between the node borders); only optional and
+      // convergence edges keep their middle free for the marker or arrow, so the label is shifted there towards
+      // the lower node because node names hang below the nodes
+      const unitX = deltaX / length
+      const unitY = deltaY / length
+      const startClip = borderDistance(source, unitX, unitY)
+      const endClip = borderDistance(target, -unitX, -unitY)
+      const visibleLength = length - startClip - endClip
+      const visibleMiddleX = middleX + unitX * (startClip - endClip) / 2
+      const visibleMiddleY = middleY + unitY * (startClip - endClip) / 2
+      const labelHalfWidth = (link.label?.length ?? 0) * 6.6 / 2
+      const labelHalfHeight = 7
+      const directionX = deltaY < 0 ? -unitX : unitX
+      const directionY = Math.abs(unitY)
+      const extent = Math.abs(directionX) * labelHalfWidth + Math.abs(directionY) * labelHalfHeight
+      const reserveMiddle = link.optional || link.connectionType === 'CONVERGENCE'
+      let labelX = visibleMiddleX
+      let labelY = visibleMiddleY
+      if (reserveMiddle && 9 + 2 * extent + 2 <= visibleLength / 2) {
+        labelX = visibleMiddleX + directionX * (extent + 9)
+        labelY = visibleMiddleY + directionY * (extent + 9)
+      } else if (reserveMiddle || 2 * extent + 2 > visibleLength) {
+        // the edge is too short, so the label is placed beside the edge instead
+        const side = perpendicularY > 0 ? -1 : 1
+        const offset = 9 + Math.abs(perpendicularX) * labelHalfWidth + Math.abs(perpendicularY) * labelHalfHeight
+        labelX = visibleMiddleX + perpendicularX * side * offset
+        labelY = visibleMiddleY + perpendicularY * side * offset
+      }
+      select(this).select<SVGTextElement>('text.edge-label')
+        .attr('x', labelX)
+        .attr('y', labelY + 4)
     })
 
     nodeSelection.attr('transform', (node) => `translate(${node.x ?? 0},${node.y ?? 0})`)

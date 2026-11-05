@@ -13,6 +13,7 @@ export interface DfmEdge {
   target: string
   connectionType: string
   optional: boolean
+  label?: string | null
 }
 
 export interface DfmGraph {
