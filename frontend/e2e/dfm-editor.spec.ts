@@ -191,62 +191,14 @@ test('restarts copy feedback on repeated clicks and clears it when the source ch
   await expect(page.locator('.source-editor-container').getByRole('status')).toHaveText('')
 })
 
-test('copies notes with independent half-second feedback', async ({ page, context }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-  await page.clock.install()
+test('shows the editor and graph without a notes area', async ({ page }) => {
   await page.goto('/')
-  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1000)
-
-  const notes = page.getByRole('textbox', { name: 'Notizen zum Modell' })
-  const copyButton = page.getByRole('button', { name: 'Notizen in die Zwischenablage kopieren' })
-  const sourceButton = page.getByRole('button', { name: 'DFM-Quelltext in die Zwischenablage kopieren' })
-  const feedback = page.locator('.notes-actions').getByRole('status')
-  await expect(copyButton).toBeDisabled()
-  await notes.fill('Meine Notiz')
-  await copyButton.click()
-  await expect(feedback).toHaveText('Notizen in die Zwischenablage kopiert.')
-  await expect(copyButton.locator('.copy-success-icon')).toBeVisible()
-  await expect(copyButton).toHaveCSS('color', 'rgb(2, 122, 72)')
-  await expect(sourceButton.locator('.copy-default-icon')).toBeVisible()
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('Meine Notiz')
-  await page.clock.fastForward(499)
-  await expect(copyButton.locator('.copy-success-icon')).toBeVisible()
-  await page.clock.fastForward(1)
-  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
-  await expect(feedback).toHaveText('')
-
-  await copyButton.click()
-  await notes.fill('')
-  await expect(copyButton).toBeDisabled()
-  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
-  await expect(feedback).toHaveText('')
-})
-
-test('shows localized error feedback when copying notes fails', async ({ page }) => {
-  await page.clock.install()
-  await page.goto('/')
-  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1000)
-  await page.evaluate(() => {
-    Object.defineProperty(navigator, 'clipboard', {
-      configurable: true,
-      value: { writeText: () => Promise.reject(new Error('Clipboard access denied')) },
-    })
-  })
-
+  await expect(page.getByRole('heading', { name: 'DFM-Notation' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'DFM Model' })).toBeVisible()
+  await expect(page.getByRole('textbox', { name: 'Notizen zum Modell' })).toHaveCount(0)
   await page.getByRole('button', { name: 'Sprache auf Englisch umstellen' }).click()
-  await page.getByRole('textbox', { name: 'Model notes' }).fill('Notes')
-  const copyButton = page.getByRole('button', { name: 'Copy notes to clipboard' })
-  const feedback = page.locator('.notes-actions').getByRole('status')
-  await expect(copyButton).toHaveAttribute('title', 'Copy notes to clipboard')
-  await copyButton.click()
-  await expect(feedback).toHaveText('Could not copy notes. Check your browser permissions.')
-  await expect(copyButton.locator('.copy-error-icon')).toBeVisible()
-  await expect(copyButton).toHaveCSS('color', 'rgb(180, 35, 24)')
-  await page.clock.fastForward(499)
-  await expect(copyButton.locator('.copy-error-icon')).toBeVisible()
-  await page.clock.fastForward(1)
-  await expect(copyButton.locator('.copy-default-icon')).toBeVisible()
-  await expect(feedback).toHaveText('')
+  await expect(page.getByRole('textbox', { name: 'Model notes' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Copy DFM source to clipboard' })).toBeVisible()
 })
 
 for (const scenario of scenarios) {

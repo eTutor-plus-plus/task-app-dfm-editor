@@ -3,7 +3,6 @@ import { computed, defineAsyncComponent, onBeforeUnmount, ref, watch } from 'vue
 import packageInfo from '../package.json'
 import type { DfmGraph, ParseError } from './types'
 import { translate, type Locale } from './i18n'
-import CopyButton from './components/CopyButton.vue'
 
 const DfmGraphView = defineAsyncComponent(() => import('./components/DfmGraphView.vue'))
 const DfmSourceEditor = defineAsyncComponent(() => import('./components/DfmSourceEditor.vue'))
@@ -22,7 +21,6 @@ Sales - Time;
 `
 
 const source = ref(example)
-const notes = ref('')
 const locale = ref<Locale>('de')
 const graph = ref<DfmGraph | null>(null)
 const lastRenderedSource = ref<string | null>(null)
@@ -208,30 +206,6 @@ onBeforeUnmount(() => {
         <DfmGraphView :graph="graph" :locale="locale" />
       </section>
     </div>
-
-    <section class="panel notes-panel" aria-labelledby="notes-title">
-      <div class="panel-heading">
-        <div>
-          <p class="eyebrow">{{ translate(locale, 'notesEyebrow') }}</p>
-          <h2 id="notes-title">{{ translate(locale, 'notesTitle') }}</h2>
-        </div>
-        <div class="notes-actions">
-          <CopyButton
-            :text="notes"
-            :label="translate(locale, 'copyNotes')"
-            :success-message="translate(locale, 'notesCopied')"
-            :error-message="translate(locale, 'notesCopyFailed')"
-          />
-        </div>
-      </div>
-      <textarea
-        v-model="notes"
-        class="notes-textarea"
-        rows="6"
-        :aria-label="translate(locale, 'notesTitle')"
-        :placeholder="translate(locale, 'notesPlaceholder')"
-      />
-    </section>
 
     <footer class="app-footer">
       <span>{{ translate(locale, 'editorVersion', { version: editorVersion }) }}</span>

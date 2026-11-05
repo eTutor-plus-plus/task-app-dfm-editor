@@ -118,21 +118,6 @@ h2 {
   box-shadow: 0 2px 6px rgb(16 24 40 / 4%);
 }
 
-.notes-panel {
-  min-height: 0;
-  margin-top: 20px;
-}
-
-.notes-panel .panel-heading {
-  margin-bottom: 12px;
-}
-
-.notes-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
 .copy-button {
   display: grid;
   width: 38px;
@@ -173,24 +158,6 @@ h2 {
   color: #b42318;
 }
 
-.notes-textarea {
-  display: block;
-  width: 100%;
-  min-height: 150px;
-  padding: 12px;
-  border: 1px solid #d0d5dd;
-  border-radius: 8px;
-  color: #182230;
-  font: inherit;
-  line-height: 1.5;
-  resize: vertical;
-}
-
-.notes-textarea::placeholder {
-  color: #98a2b3;
-}
-
-.notes-textarea:focus-visible,
 .copy-button:focus-visible {
   outline: 3px solid rgb(21 112 239 / 20%);
   outline-offset: 2px;
