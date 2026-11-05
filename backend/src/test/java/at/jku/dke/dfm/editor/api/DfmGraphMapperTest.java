@@ -46,6 +46,21 @@ class DfmGraphMapperTest {
     }
 
     @Test
+    void ignoresLineComments() {
+        var elements = new DfmParser().parse("""
+            // sales model
+            fact Sales { Revenue; }; // measure
+            dimension Product { product - category; };
+            // Sales - Product;
+            """);
+
+        var graph = new DfmGraphMapper().map(elements);
+
+        assertEquals(1, graph.nodes().stream().filter(node -> node.type() == DfmGraphDto.NodeType.FACT).count());
+        assertEquals(1, graph.edges().size());
+    }
+
+    @Test
     void connectsFactOnlyToFirstHierarchy() {
         var elements = new DfmParser().parse("""
             fact Sales { Revenue; };

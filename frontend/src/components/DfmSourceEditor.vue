@@ -20,6 +20,7 @@ let editor: EditorView | undefined
 const dfmLanguage = StreamLanguage.define({
   token(stream) {
     if (stream.eatSpace()) return null
+    if (stream.match(/\/\/.*/)) return 'comment'
     if (stream.match(/\b(?:fact|dimension|descriptive)\b/i)) return 'keyword'
     if (stream.match(/->|[-=]/)) return 'operator'
     if (stream.match(/[{}();]/)) return 'bracket'
@@ -27,10 +28,23 @@ const dfmLanguage = StreamLanguage.define({
     stream.next()
     return null
   },
+  languageData: { commentTokens: { line: '//' } },
 })
 
 function prettifyDfm(source: string) {
-  const tokens = source.match(/->|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[{}();=,-]|[^\s{}();=,-]+/g) ?? []
+  const tokens: string[] = []
+  const commentOnOwnLine = new Set<number>()
+  let previousEnd = 0
+  for (const match of source.matchAll(/\/\/[^\n]*|->|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[{}();=,-]|(?:(?!\/\/)[^\s{}();=,-])+/g)) {
+    if (match[0].startsWith('//')) {
+      const gap = source.slice(previousEnd, match.index)
+      if (tokens.length === 0 || gap.includes('\n')) commentOnOwnLine.add(tokens.length)
+      tokens.push(match[0].trimEnd())
+    } else {
+      tokens.push(match[0])
+    }
+    previousEnd = match.index + match[0].length
+  }
   let output = ''
   let indent = 0
 
@@ -46,6 +60,20 @@ function prettifyDfm(source: string) {
 
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index]
+
+    if (token.startsWith('//')) {
+      if (commentOnOwnLine.has(index)) {
+        trimTrailingSpaces()
+        if (output.length > 0 && !output.endsWith('\n')) output += '\n'
+        startLine()
+        output += `${token}\n`
+      } else {
+        trimTrailingSpaces()
+        output = output.endsWith('\n') ? output.slice(0, -1) : output
+        output += ` ${token}\n`
+      }
+      continue
+    }
 
     if (token === '{' && tokens[index + 1]?.toLowerCase() === 'descriptive' && tokens[index + 2] === '}') {
       startLine()
