@@ -130,6 +130,23 @@ class DfmGraphMapperTest {
         assertTrue(monthToYear.stream().anyMatch(edge -> edge.connectionType().equals("CONVERGENCE")));
     }
 
+    @Test
+    void mapsRecursiveHierarchyToSelfLoopWithRole() {
+        var elements = new DfmParser().parse("""
+            fact Sales { profit; };
+            dimension SalesRepresentative { salesRepresentative -[supervisor]-> salesRepresentative; };
+            Sales - SalesRepresentative;
+            """);
+
+        var graph = new DfmGraphMapper().map(elements);
+
+        assertEquals(2, graph.nodes().size());
+        assertEquals(2, graph.edges().size());
+        var loop = graph.edges().stream().filter(edge -> "supervisor".equals(edge.label())).findFirst().orElseThrow();
+        assertEquals(loop.source(), loop.target());
+        assertEquals("CONVERGENCE", loop.connectionType());
+    }
+
     private static boolean hasEdge(DfmGraphDto graph, String sourceLabel, String targetLabel) {
         return graph.edges().stream().anyMatch(edge ->
             sourceLabel.equals(label(graph, edge.source())) && targetLabel.equals(label(graph, edge.target())));

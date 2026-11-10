@@ -405,6 +405,7 @@ h2 {
   stroke: #98a2b3;
   stroke-width: 1.5;
   stroke-opacity: 0.8;
+  fill: none;
 }
 
 .optional-edge-marker {

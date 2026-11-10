@@ -47,6 +47,80 @@ function collisionRadius(node: SimNode) {
   return Math.max(56, labelWidth(node) / 2 + 6)
 }
 
+const SELF_LOOP_HEIGHT = 38
+const SELF_LOOP_HALF_WIDTH = 26
+const SELF_LOOP_HALF_GAP = 6
+const MAX_LOOP_CLEARANCE = 70 * Math.PI / 180
+const LEVEL_RADIUS = 10
+
+type LinkEnd = string | { id: string }
+
+function endId(end: LinkEnd) {
+  return typeof end === 'string' ? end : end.id
+}
+
+// a self-loop connects a level to itself (recursive hierarchy)
+function isSelfLink(link: { source: LinkEnd; target: LinkEnd }) {
+  return endId(link.source) === endId(link.target)
+}
+
+// Geometry of a self-loop at a positioned node. The loop points upwards (the name of a level hangs below the node)
+// and as far away from the connected edges as possible.
+function selfLoopShape(node: SimNode, links: SimLink[], label?: string | null) {
+  const x = node.x ?? 0
+  const y = node.y ?? 0
+
+  const neighborAngles: number[] = []
+  for (const link of links) {
+    if (isSelfLink(link) || typeof link.source === 'string' || typeof link.target === 'string') continue
+    const other = link.source === node ? link.target : link.target === node ? link.source : null
+    if (other) neighborAngles.push(Math.atan2((other.y ?? 0) - y, (other.x ?? 0) - x))
+  }
+
+  // among the upward directions the one with the largest angular distance to all connected edges wins;
+  // without a clear difference the loop points straight up
+  let bestAngle = -Math.PI / 2
+  let bestScore = -Infinity
+  for (let degrees = -150; degrees <= -30; degrees += 5) {
+    const angle = degrees * Math.PI / 180
+    const clearance = Math.min(
+      MAX_LOOP_CLEARANCE,
+      ...neighborAngles.map((other) => Math.abs(Math.atan2(Math.sin(angle - other), Math.cos(angle - other)))),
+    )
+    const score = clearance - Math.abs(angle + Math.PI / 2) * 0.01
+    if (score > bestScore) {
+      bestScore = score
+      bestAngle = angle
+    }
+  }
+  const directionX = Math.cos(bestAngle)
+  const directionY = Math.sin(bestAngle)
+  const perpendicularX = -directionY
+  const perpendicularY = directionX
+
+  const startAlong = Math.sqrt(LEVEL_RADIUS * LEVEL_RADIUS - SELF_LOOP_HALF_GAP * SELF_LOOP_HALF_GAP)
+  const controlAlong = LEVEL_RADIUS + SELF_LOOP_HEIGHT
+  const point = (across: number, along: number) => ({
+    x: x + perpendicularX * across + directionX * along,
+    y: y + perpendicularY * across + directionY * along,
+  })
+  const start = point(-SELF_LOOP_HALF_GAP, startAlong)
+  const end = point(SELF_LOOP_HALF_GAP, startAlong)
+  const first = point(-SELF_LOOP_HALF_WIDTH, controlAlong)
+  const second = point(SELF_LOOP_HALF_WIDTH, controlAlong)
+
+  const tip = 0.75 * controlAlong + 0.25 * startAlong
+  const halfWidth = (label?.length ?? 0) * 6.6 / 2
+  const extent = Math.abs(directionX) * halfWidth + Math.abs(directionY) * 7
+  const labelCenter = point(0, tip + 9 + extent)
+
+  return {
+    path: `M ${start.x} ${start.y} C ${first.x} ${first.y}, ${second.x} ${second.y}, ${end.x} ${end.y}`,
+    labelX: labelCenter.x,
+    labelY: labelCenter.y,
+  }
+}
+
 const props = defineProps<{ graph: DfmGraph | null; locale: Locale }>()
 const svgHost = ref<SVGSVGElement | null>(null)
 const exportError = ref<TranslationKey | null>(null)
@@ -190,7 +264,9 @@ function labelWidth(node: SimNode) {
 
 // Places the attribute trees radially: facts are roots, leaves share the outer ring and
 // inner levels sit on rings in between, so tree edges never need to cross other nodes.
-function placeRadialTrees(nodes: SimNode[], edges: DfmGraph['edges']) {
+function placeRadialTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
+  // self-loops (recursive hierarchies) are not part of the tree structure
+  const edges = allEdges.filter((edge) => !isSelfLink(edge))
   const byId = new Map(nodes.map((node) => [node.id, node]))
   const outgoing = new Map<string, string[]>()
   const incoming = new Map<string, string[]>()
@@ -410,7 +486,7 @@ function renderGraph(graph: DfmGraph | null) {
   const nodes: SimNode[] = graph.nodes.map((node) => ({ ...node }))
   placeRadialTrees(nodes, graph.edges)
   const links: SimLink[] = graph.edges.map((edge) => ({ ...edge }))
-  const layoutLinks = [...links]
+  const layoutLinks = links.filter((link) => !isSelfLink(link))
   const nodeById = new Map(nodes.map((node) => [node.id, node]))
   const initialDistances = new Map<SimLink, number>(links.map((link) => {
     const source = nodeById.get(link.source as string)
@@ -510,23 +586,32 @@ function renderGraph(graph: DfmGraph | null) {
     .attr('class', 'edge-group')
 
   edgeSelection.each(function (link) {
-    const segmentCount = link.connectionType === 'MULTIPLE' || link.connectionType === 'CONVERGENCE'
-      ? 2
-      : 1
     const group = select(this)
 
-    group.selectAll<SVGLineElement, number>('line.edge')
-      .data(Array.from({ length: segmentCount }, (_, index) => index))
-      .join('line')
-      .attr('class', 'edge')
-      .attr('marker-end', (index) => link.connectionType === 'CONVERGENCE' && index === 0
-        ? 'url(#convergence-arrow)'
-        : null)
+    if (isSelfLink(link)) {
+      group.selectAll<SVGPathElement, number>('path.edge')
+        .data([0])
+        .join('path')
+        .attr('class', 'edge')
+        .attr('marker-end', link.connectionType === 'CONVERGENCE' ? 'url(#convergence-arrow)' : null)
+    } else {
+      const segmentCount = link.connectionType === 'MULTIPLE' || link.connectionType === 'CONVERGENCE'
+        ? 2
+        : 1
 
-    group.selectAll<SVGLineElement, number>('line.optional-edge-marker')
-      .data(link.optional ? [0] : [])
-      .join('line')
-      .attr('class', 'optional-edge-marker')
+      group.selectAll<SVGLineElement, number>('line.edge')
+        .data(Array.from({ length: segmentCount }, (_, index) => index))
+        .join('line')
+        .attr('class', 'edge')
+        .attr('marker-end', (index) => link.connectionType === 'CONVERGENCE' && index === 0
+          ? 'url(#convergence-arrow)'
+          : null)
+
+      group.selectAll<SVGLineElement, number>('line.optional-edge-marker')
+        .data(link.optional ? [0] : [])
+        .join('line')
+        .attr('class', 'optional-edge-marker')
+    }
 
     group.selectAll<SVGTextElement, string>('text.edge-label')
       .data(link.label ? [link.label] : [])
@@ -626,6 +711,12 @@ function renderGraph(graph: DfmGraph | null) {
 
   const updatePositions = () => {
     edgeSelection.each(function (link) {
+      if (isSelfLink(link)) {
+        const shape = selfLoopShape(link.source as SimNode, links, link.label)
+        select(this).select('path.edge').attr('d', shape.path)
+        select(this).select('text.edge-label').attr('x', shape.labelX).attr('y', shape.labelY + 4)
+        return
+      }
       const source = link.source as SimNode
       const target = link.target as SimNode
       const sourceX = source.x ?? 0
@@ -723,6 +814,13 @@ function renderGraph(graph: DfmGraph | null) {
     .stop()
     .alpha(0.4)
     .tick(200)
+  links.filter(isSelfLink).forEach((link) => {
+    const node = nodeById.get(endId(link.source))
+    if (node) {
+      link.source = node
+      link.target = node
+    }
+  })
   updatePositions()
 
   const bounds = content.node()?.getBBox()
