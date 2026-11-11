@@ -92,67 +92,78 @@
       "source": "fact-0",
       "target": "dimension-0-level-visitor",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-age",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-gender",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-country",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-language",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-browser",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-device",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-screenSize",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-referrer",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-campaign",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-visitor",
       "target": "dimension-0-level-landingPage",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     }
   ]
 }

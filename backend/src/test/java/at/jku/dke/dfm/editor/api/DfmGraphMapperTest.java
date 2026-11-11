@@ -147,6 +147,34 @@ class DfmGraphMapperTest {
         assertEquals("CONVERGENCE", loop.connectionType());
     }
 
+    @Test
+    void mapsSharedAndCrossHierarchiesToTypedNodes() {
+        var elements = new DfmParser().parse("""
+            fact Sales { profit; };
+            hierarchy VAT { VAT - vatClass; };
+            hierarchy city { city - country - {cross} VAT; };
+            dimension city { {shared} city; };
+            dimension product { product - category - {cross} VAT; };
+            Sales -[storeCity]- city;
+            Sales - product;
+            """);
+
+        var graph = new DfmGraphMapper().map(elements);
+
+        assertEquals(DfmGraphDto.NodeType.SHARED, nodeType(graph, "city"));
+        assertEquals(DfmGraphDto.NodeType.CROSS, nodeType(graph, "VAT"));
+        assertEquals(DfmGraphDto.NodeType.LEVEL, nodeType(graph, "country"));
+        assertEquals(1, graph.nodes().stream().filter(node -> node.label().equals("VAT")).count());
+        assertTrue(hasEdge(graph, "Sales", "city"));
+        assertTrue(hasEdge(graph, "country", "VAT"));
+        assertTrue(hasEdge(graph, "category", "VAT"));
+        assertTrue(graph.edges().stream().anyMatch(edge -> "storeCity".equals(edge.label())));
+    }
+
+    private static DfmGraphDto.NodeType nodeType(DfmGraphDto graph, String label) {
+        return graph.nodes().stream().filter(node -> node.label().equals(label)).findFirst().orElseThrow().type();
+    }
+
     private static boolean hasEdge(DfmGraphDto graph, String sourceLabel, String targetLabel) {
         return graph.edges().stream().anyMatch(edge ->
             sourceLabel.equals(label(graph, edge.source())) && targetLabel.equals(label(graph, edge.target())));

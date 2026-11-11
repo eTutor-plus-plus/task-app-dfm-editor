@@ -58,37 +58,43 @@
       "source": "fact-0",
       "target": "fact-0-descriptive-0",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-0-level-destinationHarbourTerminal",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-destinationHarbourTerminal",
       "target": "dimension-0-level-destinationMetropolitanArea",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-destinationMetropolitanArea",
       "target": "dimension-0-level-destinationFederalState",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-destinationFederalState",
       "target": "dimension-0-level-destinationCountryRegion",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-destinationHarbourTerminal",
       "target": "dimension-0-level-terminalOperatingCompanyName",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     }
   ]
 }

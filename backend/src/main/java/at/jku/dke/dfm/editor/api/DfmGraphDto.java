@@ -4,7 +4,7 @@ import java.util.List;
 
 public record DfmGraphDto(List<Node> nodes, List<Edge> edges) {
     public enum NodeType {
-        FACT, DIMENSION, LEVEL, DESCRIPTIVE
+        FACT, DIMENSION, LEVEL, DESCRIPTIVE, SHARED, CROSS
     }
 
     public record Node(String id, String label, NodeType type, boolean optional, List<String> details) {

@@ -1,0 +1,50 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Sales",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "profit"
+      ]
+    },
+    {
+      "id": "dimension-0-level-salesRepresentative",
+      "label": "salesRepresentative",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-region",
+      "label": "region",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-salesRepresentative",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-salesRepresentative",
+      "target": "dimension-0-level-salesRepresentative",
+      "connectionType": "CONVERGENCE",
+      "optional": false,
+      "label": "supervisor"
+    },
+    {
+      "source": "dimension-0-level-salesRepresentative",
+      "target": "dimension-0-level-region",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    }
+  ]
+}

@@ -36,19 +36,22 @@
       "source": "fact-0",
       "target": "dimension-0-level-level_1",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-level_1",
       "target": "dimension-0-level-level_2",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-level_2",
       "target": "dimension-0-level-level_3",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     }
   ]
 }

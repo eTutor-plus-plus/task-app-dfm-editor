@@ -99,73 +99,85 @@
       "source": "fact-0",
       "target": "dimension-0-level-dim1",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-1-level-dim2",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-2-level-dim3",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-dim1",
       "target": "dimension-0-level-dim1Level1",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-dim1Level1",
       "target": "dimension-0-level-dim1Level2",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-dim1",
       "target": "dimension-0-level-dim1Name",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-dim2",
       "target": "dimension-1-level-dim2Level1",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-dim2Level1",
       "target": "dimension-1-level-dim2Level2",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-dim2",
       "target": "dimension-1-level-dim2Name",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-dim3",
       "target": "dimension-2-level-dim3Level1",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-dim3Level1",
       "target": "dimension-2-level-dim3Level2",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-dim3",
       "target": "dimension-2-level-dim3Name",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     }
   ]
 }

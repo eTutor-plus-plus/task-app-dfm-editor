@@ -1,0 +1,127 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Sales",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "profit"
+      ]
+    },
+    {
+      "id": "dimension-0-level-Customer",
+      "label": "Customer",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-country",
+      "label": "country",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-City",
+      "label": "City",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-region",
+      "label": "region",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-zipcode",
+      "label": "zipcode",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-population",
+      "label": "population",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-country",
+      "label": "country",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-continent",
+      "label": "continent",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-Customer",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-City",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "storeCity"
+    },
+    {
+      "source": "dimension-0-level-Customer",
+      "target": "dimension-0-level-country",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "customerCountry"
+    },
+    {
+      "source": "dimension-1-level-City",
+      "target": "dimension-1-level-region",
+      "connectionType": "MULTIPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-City",
+      "target": "dimension-1-level-zipcode",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-City",
+      "target": "dimension-1-level-population",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-City",
+      "target": "dimension-1-level-country",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-country",
+      "target": "dimension-1-level-continent",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    }
+  ]
+}

@@ -78,55 +78,64 @@
       "source": "fact-0",
       "target": "fact-0-descriptive-0",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-0-level-policy",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-policy",
       "target": "dimension-0-level-rider",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-0-level-rider",
       "target": "dimension-0-level-riderType",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-policy",
       "target": "dimension-0-level-coverage",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-coverage",
       "target": "dimension-0-level-coverageGroup",
       "connectionType": "MULTIPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-policy",
       "target": "dimension-0-level-holder",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-0-level-holder",
       "target": "dimension-0-level-coHolder",
       "connectionType": "MULTIPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-0-level-policy",
       "target": "dimension-0-level-policyNumber",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     }
   ]
 }

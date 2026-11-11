@@ -438,8 +438,16 @@ h2 {
   stroke: #0ba5ec;
 }
 
-.graph-node.level circle {
+.graph-node.level circle,
+.graph-node.shared circle,
+.graph-node.cross circle {
   fill: #fff;
+  stroke: #1570ef;
+  stroke-width: 2;
+}
+
+.graph-node .cross-arc {
+  fill: none;
   stroke: #1570ef;
   stroke-width: 2;
 }
@@ -478,7 +486,9 @@ h2 {
 }
 
 .graph-node.descriptive .descriptive-underline,
-.graph-node.level .level-optional-marker {
+.graph-node.level .level-optional-marker,
+.graph-node.shared .level-optional-marker,
+.graph-node.cross .level-optional-marker {
   stroke: #101828;
   stroke-width: 1.5;
 }

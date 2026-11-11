@@ -43,31 +43,36 @@
       "source": "fact-0",
       "target": "dimension-0-level-product",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-product",
       "target": "dimension-0-level-brand",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-0-level-brand",
       "target": "dimension-0-level-segment",
       "connectionType": "MULTIPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-0-level-product",
       "target": "dimension-0-level-category",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-category",
       "target": "dimension-0-level-segment",
       "connectionType": "MULTIPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     }
   ]
 }

@@ -12,6 +12,8 @@ Im Entwicklungsmodus läuft das Frontend mit Vite auf Port 5173 und leitet `/api
 
 Der Editor unterstützt Zeilenkommentare mit `//` (Syntax-Highlighting, Umschalten mit `Strg+/`; die Formatierung erhält Kommentare) und Beschreibungen an Hierarchie-Verbindungen, z. B. `customer -[customercity]- city` (auch `=[text]=` und `-[text]->`) sowie an Fakt-Dimension-Verbindungen, z. B. `Sales -[soldat]- Time`. Beschreibungen werden als Beschriftung an der Kante dargestellt (bei Fakt-Dimension-Verbindungen an der Kante vom Fakt zum ersten Level der Dimension). Beides wird vom Core-Parser ab Version 1.4.0 unterstützt.
 
+Geteilte Hierarchien und Cross-Dimensional Attributes werden einmal mit `hierarchy Name { Kette; ... };` deklariert und mit `{shared} Name` bzw. `{cross} Name` am Ende einer Kette referenziert, z. B. `customer -[customerCity]- {shared} city;` oder `country - {cross} VAT;` (Core-Parser ab Version 1.5.0). Die Deklaration ist verpflichtend. Der Einstiegsknoten der Hierarchie wird als Doppelkreis (`{shared}`) bzw. als Kreis mit Bogen (`{cross}`) dargestellt; Syntax-Highlighting und Formatierung kennen die Marker.
+
 ## Voraussetzungen
 
 - Java 21
@@ -55,7 +57,15 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Die Tests prüfen für jedes Szenario Graph-Inhalt, Überlappungen von Knoten, Kanten durch fremde Knoten, abgeschnittene Knoten und eine lesbare Mindestskalierung. Mit laufendem Backend (Port 8082) und `E2E_BACKEND=1` wird zusätzlich geprüft, dass der echte Parser noch dieselben Graphen wie die Fixtures liefert:
+Die Tests prüfen für jedes Szenario Graph-Inhalt, Überlappungen von Knoten, Kanten durch fremde Knoten, sich kreuzende Kanten, verdeckte oder sich überlappende Kantenbeschriftungen, Schleifen rekursiver Hierarchien über anderen Knoten, abgeschnittene Knoten und eine lesbare Mindestskalierung. Zusätzlich werden 60 zufällig erzeugte Modelle mit festen Startwerten auf dieselben Layout-Kriterien geprüft (`frontend/e2e/random-layout.spec.ts`). Weitere Zufallsmodelle lassen sich über einen Bereich von Startwerten prüfen; mit `E2E_LAYOUT_REPORT=1` werden die Befunde je Modell ausgegeben, statt den Test fehlschlagen zu lassen:
+
+```powershell
+$env:E2E_LAYOUT_SEEDS = '61-300'
+$env:E2E_LAYOUT_REPORT = '1'
+npx playwright test e2e/random-layout.spec.ts
+```
+
+Mit laufendem Backend (Port 8082) und `E2E_BACKEND=1` wird zusätzlich geprüft, dass der echte Parser noch dieselben Graphen wie die Fixtures liefert:
 
 ```powershell
 $env:E2E_BACKEND = '1'

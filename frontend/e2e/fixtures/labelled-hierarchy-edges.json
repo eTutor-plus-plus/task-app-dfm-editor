@@ -1,0 +1,99 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Orders",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "amount"
+      ]
+    },
+    {
+      "id": "dimension-0-level-product",
+      "label": "product",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-category",
+      "label": "category",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-department",
+      "label": "department",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-supplier",
+      "label": "supplier",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-brand",
+      "label": "brand",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-company",
+      "label": "company",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-product",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-product",
+      "target": "dimension-0-level-category",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "belongsTo"
+    },
+    {
+      "source": "dimension-0-level-category",
+      "target": "dimension-0-level-department",
+      "connectionType": "CONVERGENCE",
+      "optional": false,
+      "label": "partOf"
+    },
+    {
+      "source": "dimension-0-level-product",
+      "target": "dimension-0-level-supplier",
+      "connectionType": "MULTIPLE",
+      "optional": false,
+      "label": "suppliedBy"
+    },
+    {
+      "source": "dimension-0-level-category",
+      "target": "dimension-0-level-brand",
+      "connectionType": "SIMPLE",
+      "optional": true,
+      "label": "optionalLink"
+    },
+    {
+      "source": "dimension-0-level-brand",
+      "target": "dimension-0-level-company",
+      "connectionType": "MULTIPLE",
+      "optional": true,
+      "label": "ownedBy"
+    }
+  ]
+}

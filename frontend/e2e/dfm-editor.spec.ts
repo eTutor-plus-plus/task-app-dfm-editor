@@ -18,6 +18,13 @@ const scenarios = readdirSync(fixtureDirectory)
 const minimumReadableScale = 0.4
 // The canvas has a fixed size, so very large models are fitted smaller and are meant to be read by zooming in.
 const minimumScaleByScenario: Record<string, number> = { 'large-model': 0.25 }
+// Longest edge in the current fixtures is about 350 units (wide fans, labelled fact connections); this guards
+// against the layout getting looser.
+const maximumEdgeLength = 360
+// A cross-dimensional attribute joins branches that lie on opposite sides of the fact, so its edge is longer.
+const maximumEdgeLengthByScenario: Record<string, number> = { 'shared-and-cross-hierarchies': 500 }
+// Known layout problems: the test is expected to fail and starts failing once the problem is fixed.
+const knownLayoutProblems: Record<string, string> = {}
 const backendUrl = process.env.E2E_BACKEND_URL ?? 'http://localhost:8082'
 
 async function renderModel(page: Page, dfm: string) {
@@ -41,7 +48,7 @@ async function mockParseApi(page: Page, graph: DfmGraph) {
   return requests
 }
 
-async function expectCleanLayout(graph: Locator, minimumScale = minimumReadableScale) {
+async function expectCleanLayout(graph: Locator, minimumScale = minimumReadableScale, maximumLength = maximumEdgeLength) {
   const layout = await graph.evaluate(inspectGraphLayout)
   expect({
     nodesWithInvalidPosition: layout.nodesWithInvalidPosition,
@@ -49,13 +56,23 @@ async function expectCleanLayout(graph: Locator, minimumScale = minimumReadableS
     edgesCrossingNodes: layout.edgesCrossingNodes,
     crossingEdges: layout.crossingEdges,
     nodesOutsideViewport: layout.nodesOutsideViewport,
+    labelsCoveredByNodes: layout.labelsCoveredByNodes,
+    overlappingLabels: layout.overlappingLabels,
+    labelsOnForeignEdges: layout.labelsOnForeignEdges,
+    loopsCoveringNodes: layout.loopsCoveringNodes,
   }).toEqual({
     nodesWithInvalidPosition: [],
     overlappingNodes: [],
     edgesCrossingNodes: [],
     crossingEdges: [],
     nodesOutsideViewport: [],
+    labelsCoveredByNodes: [],
+    overlappingLabels: [],
+    labelsOnForeignEdges: [],
+    loopsCoveringNodes: [],
   })
+  expect(layout.longestEdge, 'edges must not become so long that hierarchies fall apart')
+    .toBeLessThanOrEqual(maximumLength)
   expect(layout.scale, 'graph must stay readable (labels not shrunk too far)')
     .toBeGreaterThanOrEqual(minimumScale)
 }
@@ -63,8 +80,11 @@ async function expectCleanLayout(graph: Locator, minimumScale = minimumReadableS
 async function expectGraphMatches(graph: Locator, expected: DfmGraph) {
   const count = (predicate: (node: DfmGraph['nodes'][number]) => boolean) =>
     expected.nodes.filter(predicate).length
+  // the loop of a recursive hierarchy is drawn as a single path, all other edges as one or two lines
+  const loops = expected.edges.filter((edge) => edge.source === edge.target)
+  const lineEdges = expected.edges.filter((edge) => edge.source !== edge.target)
   const convergenceEdges = expected.edges.filter((edge) => edge.connectionType === 'CONVERGENCE').length
-  const doubleLineEdges = expected.edges.filter((edge) =>
+  const doubleLineEdges = lineEdges.filter((edge) =>
     edge.connectionType === 'CONVERGENCE' || edge.connectionType === 'MULTIPLE').length
 
   await expect(graph.locator('.graph-node')).toHaveCount(expected.nodes.length)
@@ -74,10 +94,11 @@ async function expectGraphMatches(graph: Locator, expected: DfmGraph) {
     .toHaveCount(count((node) => node.type === 'DESCRIPTIVE'))
   await expect(graph.locator('.graph-node.optional')).toHaveCount(count((node) => node.optional))
   await expect(graph.locator('.edge-group')).toHaveCount(expected.edges.length)
-  await expect(graph.locator('line.edge')).toHaveCount(expected.edges.length + doubleLineEdges)
+  await expect(graph.locator('line.edge')).toHaveCount(lineEdges.length + doubleLineEdges)
+  await expect(graph.locator('path.edge')).toHaveCount(loops.length)
   await expect(graph.locator('line.optional-edge-marker'))
-    .toHaveCount(expected.edges.filter((edge) => edge.optional).length)
-  await expect(graph.locator('line[marker-end="url(#convergence-arrow)"]')).toHaveCount(convergenceEdges)
+    .toHaveCount(lineEdges.filter((edge) => edge.optional).length)
+  await expect(graph.locator('.edge[marker-end="url(#convergence-arrow)"]')).toHaveCount(convergenceEdges)
 
   for (const label of new Set(expected.nodes.flatMap((node) => [node.label, ...node.details]))) {
     await expect(graph.getByText(label, { exact: true }).first()).toBeAttached()
@@ -203,6 +224,7 @@ test('shows the editor and graph without a notes area', async ({ page }) => {
 
 for (const scenario of scenarios) {
   test(`renders "${scenario.name}" readable and without overlaps`, async ({ page }) => {
+    test.fail(scenario.name in knownLayoutProblems, knownLayoutProblems[scenario.name])
     const requests = await mockParseApi(page, scenario.graph)
     const graph = await renderModel(page, scenario.dfm)
 
@@ -211,12 +233,13 @@ for (const scenario of scenarios) {
       ? '1 Element'
       : `${scenario.graph.nodes.length} Elemente`)).toBeVisible()
     const minimumScale = minimumScaleByScenario[scenario.name] ?? minimumReadableScale
-    await expectCleanLayout(graph, minimumScale)
+    const maximumLength = maximumEdgeLengthByScenario[scenario.name] ?? maximumEdgeLength
+    await expectCleanLayout(graph, minimumScale, maximumLength)
     expect(requests.map((request) => request.trim())).toEqual([scenario.dfm.trim()])
 
     await page.getByRole('button', { name: 'Vergrößern' }).click()
     await page.getByRole('button', { name: 'Zoom zurücksetzen' }).click()
-    await expectCleanLayout(graph, minimumScale)
+    await expectCleanLayout(graph, minimumScale, maximumLength)
   })
 }
 
@@ -230,6 +253,24 @@ test('keeps the layout stable when the same model is rendered twice', async ({ p
   await page.getByRole('button', { name: 'Ausführen' }).click()
   await expectGraphMatches(graph, purchase.graph)
   expect(await graph.evaluate(inspectGraphLayout)).toEqual(first)
+})
+
+test('formats shared and cross levels like descriptive levels', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('.cm-content').fill(
+    'hierarchy city{city - country - {cross} VAT;city = region;};dimension customer{customer -[customerCity]- {shared} city;};')
+  await page.getByRole('button', { name: 'Formatieren' }).click()
+
+  const lines = await page.locator('.cm-line').allInnerTexts()
+  expect(lines.join('\n').trim()).toBe([
+    'hierarchy city {',
+    '  city - country - {cross} VAT;',
+    '  city = region;',
+    '};',
+    'dimension customer {',
+    '  customer -[customerCity]- {shared} city;',
+    '};',
+  ].join('\n'))
 })
 
 test('replaces a rendered graph when a smaller model is run', async ({ page }) => {
@@ -282,6 +323,25 @@ test('shows parse errors returned by the backend and clears the graph', async ({
   await expect(alert).toContainText('Syntaxfehler')
   await expect(alert).toContainText('Zeile 1, Spalte 12')
   await expect(graph.locator('.graph-node')).toHaveCount(0)
+})
+
+test('keeps the label of a fact connection clear of the fact box', async ({ page }) => {
+  const scenario = scenarios.find((item) => item.name === 'labelled-fact-connection')!
+  await mockParseApi(page, scenario.graph)
+  const graph = await renderModel(page, scenario.dfm)
+  await expect(graph.locator('.graph-node')).toHaveCount(scenario.graph.nodes.length)
+
+  const overlap = await graph.evaluate((svg) => {
+    const fact = svg.querySelector('.graph-node.fact')!.getBoundingClientRect()
+    return [...svg.querySelectorAll('text.edge-label')].map((text) => {
+      const box = text.getBoundingClientRect()
+      return {
+        label: text.textContent,
+        overlaps: box.left < fact.right && box.right > fact.left && box.top < fact.bottom && box.bottom > fact.top,
+      }
+    }).filter((entry) => entry.overlaps)
+  })
+  expect(overlap).toEqual([])
 })
 
 test.describe('with the real backend', () => {

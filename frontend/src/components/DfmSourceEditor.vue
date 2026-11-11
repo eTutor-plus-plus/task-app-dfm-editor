@@ -17,11 +17,14 @@ const emit = defineEmits<{
 const host = ref<HTMLDivElement | null>(null)
 let editor: EditorView | undefined
 
+// markers in front of a level name, e.g. {descriptive} zipCode
+const LEVEL_MARKERS = new Set(['descriptive', 'shared', 'cross'])
+
 const dfmLanguage = StreamLanguage.define({
   token(stream) {
     if (stream.eatSpace()) return null
     if (stream.match(/\/\/.*/)) return 'comment'
-    if (stream.match(/\b(?:fact|dimension|descriptive)\b/i)) return 'keyword'
+    if (stream.match(/\b(?:fact|dimension|hierarchy|descriptive|shared|cross)\b/i)) return 'keyword'
     if (stream.match(/\[[A-Za-z0-9_]*\]/)) return 'string'
     if (stream.match(/->|[-=]/)) return 'operator'
     if (stream.match(/[{}();]/)) return 'bracket'
@@ -76,7 +79,7 @@ function prettifyDfm(source: string) {
       continue
     }
 
-    if (token === '{' && tokens[index + 1]?.toLowerCase() === 'descriptive' && tokens[index + 2] === '}') {
+    if (token === '{' && LEVEL_MARKERS.has(tokens[index + 1]?.toLowerCase() ?? '') && tokens[index + 2] === '}') {
       startLine()
       if (output.length > 0 && !output.endsWith(' ') && !output.endsWith('\n')) output += ' '
       output += `{${tokens[index + 1]}}`

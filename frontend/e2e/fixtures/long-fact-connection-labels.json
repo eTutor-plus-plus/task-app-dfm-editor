@@ -1,0 +1,71 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Sales",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "profit"
+      ]
+    },
+    {
+      "id": "dimension-0-level-customer",
+      "label": "customer",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-country",
+      "label": "country",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-store",
+      "label": "store",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-city",
+      "label": "city",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-customer",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "purchasedByCustomerInStore"
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-store",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "soldInShortStore"
+    },
+    {
+      "source": "dimension-0-level-customer",
+      "target": "dimension-0-level-country",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-store",
+      "target": "dimension-1-level-city",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    }
+  ]
+}

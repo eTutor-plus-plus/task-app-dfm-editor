@@ -1,4 +1,4 @@
-export type DfmNodeType = 'FACT' | 'DIMENSION' | 'LEVEL' | 'DESCRIPTIVE'
+export type DfmNodeType = 'FACT' | 'DIMENSION' | 'LEVEL' | 'DESCRIPTIVE' | 'SHARED' | 'CROSS'
 
 export interface DfmNode {
   id: string

@@ -29,6 +29,8 @@ public class DfmGraphMapper {
             case FACT -> DfmGraphDto.NodeType.FACT;
             case LEVEL -> DfmGraphDto.NodeType.LEVEL;
             case DESCRIPTIVE -> DfmGraphDto.NodeType.DESCRIPTIVE;
+            case SHARED -> DfmGraphDto.NodeType.SHARED;
+            case CROSS -> DfmGraphDto.NodeType.CROSS;
         };
     }
 }

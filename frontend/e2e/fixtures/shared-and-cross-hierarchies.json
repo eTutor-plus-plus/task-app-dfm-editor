@@ -1,0 +1,197 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Sales",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "profit"
+      ]
+    },
+    {
+      "id": "dimension-1-level-customer",
+      "label": "customer",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-product",
+      "label": "product",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-brand",
+      "label": "brand",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-category",
+      "label": "category",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-VAT-level-VAT",
+      "label": "VAT",
+      "type": "CROSS",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-VAT-level-vatClass",
+      "label": "vatClass",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-city-level-city",
+      "label": "city",
+      "type": "SHARED",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-city-level-region",
+      "label": "region",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-city-level-country",
+      "label": "country",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-city-level-continent",
+      "label": "continent",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-city-level-zipCode",
+      "label": "zipCode",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-city-level-population",
+      "label": "population",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "hierarchy-city-level-city",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "storeCity"
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-customer",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-2-level-product",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-customer",
+      "target": "hierarchy-city-level-city",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "customerCity"
+    },
+    {
+      "source": "dimension-2-level-product",
+      "target": "dimension-2-level-brand",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-product",
+      "target": "dimension-2-level-category",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-category",
+      "target": "hierarchy-VAT-level-VAT",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-VAT-level-VAT",
+      "target": "hierarchy-VAT-level-vatClass",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-city-level-city",
+      "target": "hierarchy-city-level-region",
+      "connectionType": "MULTIPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-city-level-city",
+      "target": "hierarchy-city-level-country",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-city-level-country",
+      "target": "hierarchy-city-level-continent",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-city-level-country",
+      "target": "hierarchy-VAT-level-VAT",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-city-level-city",
+      "target": "hierarchy-city-level-zipCode",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-city-level-city",
+      "target": "hierarchy-city-level-population",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    }
+  ]
+}

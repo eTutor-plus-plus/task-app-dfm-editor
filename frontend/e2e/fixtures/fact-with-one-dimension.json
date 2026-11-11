@@ -43,25 +43,29 @@
       "source": "fact-0",
       "target": "dimension-0-level-dim1",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-dim1",
       "target": "dimension-0-level-dim1Level1",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-dim1Level1",
       "target": "dimension-0-level-dim1Level2",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-dim1",
       "target": "dimension-0-level-dim1Name",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     }
   ]
 }

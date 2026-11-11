@@ -1,0 +1,114 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Sales",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "profit",
+        "quantity"
+      ]
+    },
+    {
+      "id": "fact-0-descriptive-0",
+      "label": "clerk",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "fact-0-descriptive-1",
+      "label": "comment",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-day",
+      "label": "day",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-month",
+      "label": "month",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-year",
+      "label": "year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-customer",
+      "label": "customer",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-city",
+      "label": "city",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-0",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "fact-0-descriptive-1",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-day",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "bookedOn"
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-customer",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "boughtBy"
+    },
+    {
+      "source": "dimension-0-level-day",
+      "target": "dimension-0-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-month",
+      "target": "dimension-0-level-year",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-customer",
+      "target": "dimension-1-level-city",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "livesIn"
+    }
+  ]
+}

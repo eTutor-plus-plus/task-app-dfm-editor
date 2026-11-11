@@ -50,31 +50,36 @@
       "source": "fact-0",
       "target": "fact-0-descriptive-0",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-0-level-Kunde",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-Kunde",
       "target": "dimension-0-level-Stadt",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-Stadt",
       "target": "dimension-0-level-Land",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-Kunde",
       "target": "dimension-0-level-Größe",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     }
   ]
 }

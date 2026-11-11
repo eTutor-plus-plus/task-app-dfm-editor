@@ -1,0 +1,122 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Sales",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "revenue"
+      ]
+    },
+    {
+      "id": "fact-1",
+      "label": "Returns",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "refunded"
+      ]
+    },
+    {
+      "id": "dimension-0-level-store",
+      "label": "store",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-city",
+      "label": "city",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-region",
+      "label": "region",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-product",
+      "label": "product",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-category",
+      "label": "category",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-returnStore",
+      "label": "returnStore",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-returnCity",
+      "label": "returnCity",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-store",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "soldAt"
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-product",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "sells"
+    },
+    {
+      "source": "fact-1",
+      "target": "dimension-2-level-returnStore",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "returnedAt"
+    },
+    {
+      "source": "dimension-0-level-store",
+      "target": "dimension-0-level-city",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "locatedIn"
+    },
+    {
+      "source": "dimension-0-level-city",
+      "target": "dimension-0-level-region",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-product",
+      "target": "dimension-1-level-category",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-returnStore",
+      "target": "dimension-2-level-returnCity",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "locatedIn"
+    }
+  ]
+}

@@ -528,439 +528,512 @@
       "source": "fact-0",
       "target": "fact-0-descriptive-0",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-0-level-area1",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-1-level-area2",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-2-level-area3",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-3-level-area4",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-4-level-area5",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-5-level-area6",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-6-level-area7",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "fact-0",
       "target": "dimension-7-level-area8",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-area1",
       "target": "dimension-0-level-area1A",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-area1A",
       "target": "dimension-0-level-area1B",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-area1B",
       "target": "dimension-0-level-area1C",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-area1A",
       "target": "dimension-0-level-area1Note",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-area1",
       "target": "dimension-0-level-area1Optional",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-0-level-area1Optional",
       "target": "dimension-0-level-area1OptionalChild",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-area1",
       "target": "dimension-0-level-area1D",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-0-level-area1",
       "target": "dimension-0-level-area1Label",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-area2",
       "target": "dimension-1-level-area2A",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-area2A",
       "target": "dimension-1-level-area2B",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-area2B",
       "target": "dimension-1-level-area2C",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-area2A",
       "target": "dimension-1-level-area2Note",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-area2",
       "target": "dimension-1-level-area2Optional",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-1-level-area2Optional",
       "target": "dimension-1-level-area2OptionalChild",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-area2",
       "target": "dimension-1-level-area2D",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-1-level-area2",
       "target": "dimension-1-level-area2Label",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-area3",
       "target": "dimension-2-level-area3A",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-area3A",
       "target": "dimension-2-level-area3B",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-area3B",
       "target": "dimension-2-level-area3C",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-area3A",
       "target": "dimension-2-level-area3Note",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-area3",
       "target": "dimension-2-level-area3Optional",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-2-level-area3Optional",
       "target": "dimension-2-level-area3OptionalChild",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-area3",
       "target": "dimension-2-level-area3D",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-2-level-area3",
       "target": "dimension-2-level-area3Label",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-3-level-area4",
       "target": "dimension-3-level-area4A",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-3-level-area4A",
       "target": "dimension-3-level-area4B",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-3-level-area4B",
       "target": "dimension-3-level-area4C",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-3-level-area4A",
       "target": "dimension-3-level-area4Note",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-3-level-area4",
       "target": "dimension-3-level-area4Optional",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-3-level-area4Optional",
       "target": "dimension-3-level-area4OptionalChild",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-3-level-area4",
       "target": "dimension-3-level-area4D",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-3-level-area4",
       "target": "dimension-3-level-area4Label",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-4-level-area5",
       "target": "dimension-4-level-area5A",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-4-level-area5A",
       "target": "dimension-4-level-area5B",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-4-level-area5B",
       "target": "dimension-4-level-area5C",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-4-level-area5A",
       "target": "dimension-4-level-area5Note",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-4-level-area5",
       "target": "dimension-4-level-area5Optional",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-4-level-area5Optional",
       "target": "dimension-4-level-area5OptionalChild",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-4-level-area5",
       "target": "dimension-4-level-area5D",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-4-level-area5",
       "target": "dimension-4-level-area5Label",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-5-level-area6",
       "target": "dimension-5-level-area6A",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-5-level-area6A",
       "target": "dimension-5-level-area6B",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-5-level-area6B",
       "target": "dimension-5-level-area6C",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-5-level-area6A",
       "target": "dimension-5-level-area6Note",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-5-level-area6",
       "target": "dimension-5-level-area6Optional",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-5-level-area6Optional",
       "target": "dimension-5-level-area6OptionalChild",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-5-level-area6",
       "target": "dimension-5-level-area6D",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-5-level-area6",
       "target": "dimension-5-level-area6Label",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-6-level-area7",
       "target": "dimension-6-level-area7A",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-6-level-area7A",
       "target": "dimension-6-level-area7B",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-6-level-area7B",
       "target": "dimension-6-level-area7C",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-6-level-area7A",
       "target": "dimension-6-level-area7Note",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-6-level-area7",
       "target": "dimension-6-level-area7Optional",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-6-level-area7Optional",
       "target": "dimension-6-level-area7OptionalChild",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-6-level-area7",
       "target": "dimension-6-level-area7D",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-6-level-area7",
       "target": "dimension-6-level-area7Label",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-7-level-area8",
       "target": "dimension-7-level-area8A",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-7-level-area8A",
       "target": "dimension-7-level-area8B",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-7-level-area8B",
       "target": "dimension-7-level-area8C",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-7-level-area8A",
       "target": "dimension-7-level-area8Note",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-7-level-area8",
       "target": "dimension-7-level-area8Optional",
       "connectionType": "SIMPLE",
-      "optional": true
+      "optional": true,
+      "label": null
     },
     {
       "source": "dimension-7-level-area8Optional",
       "target": "dimension-7-level-area8OptionalChild",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-7-level-area8",
       "target": "dimension-7-level-area8D",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     },
     {
       "source": "dimension-7-level-area8",
       "target": "dimension-7-level-area8Label",
       "connectionType": "SIMPLE",
-      "optional": false
+      "optional": false,
+      "label": null
     }
   ]
 }
