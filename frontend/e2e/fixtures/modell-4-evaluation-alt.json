@@ -1,0 +1,229 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Evaluation_1MNF_Alt",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "overallQualityScore",
+        "didacticQualityScore",
+        "contentQualityScore",
+        "effortPerWeek",
+        "finalGrade"
+      ]
+    },
+    {
+      "id": "dimension-0-level-course",
+      "label": "course",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-courseType",
+      "label": "courseType",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-name",
+      "label": "name",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-workload",
+      "label": "workload",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-hoursPerWeek",
+      "label": "hoursPerWeek",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-semester",
+      "label": "semester",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-year",
+      "label": "year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-season",
+      "label": "season",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-student",
+      "label": "student",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-birthYear",
+      "label": "birthYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-nationality",
+      "label": "nationality",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-gender",
+      "label": "gender",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-curriculum-level-curriculum",
+      "label": "curriculum",
+      "type": "CROSS",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-curriculum-level-school",
+      "label": "school",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-course",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-semester",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-2-level-student",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-course",
+      "target": "dimension-0-level-courseType",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-course",
+      "target": "dimension-0-level-name",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-course",
+      "target": "dimension-0-level-workload",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-course",
+      "target": "dimension-0-level-hoursPerWeek",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-course",
+      "target": "hierarchy-curriculum-level-curriculum",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-semester",
+      "target": "dimension-1-level-year",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-semester",
+      "target": "dimension-1-level-season",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-semester",
+      "target": "hierarchy-curriculum-level-curriculum",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-student",
+      "target": "dimension-2-level-birthYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-student",
+      "target": "dimension-2-level-nationality",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-student",
+      "target": "dimension-2-level-gender",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-student",
+      "target": "hierarchy-curriculum-level-curriculum",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "enrollment"
+    },
+    {
+      "source": "hierarchy-curriculum-level-curriculum",
+      "target": "hierarchy-curriculum-level-school",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    }
+  ]
+}

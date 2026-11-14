@@ -1,0 +1,282 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Project",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "duration",
+        "noOfPublications"
+      ]
+    },
+    {
+      "id": "dimension-0-level-partnerInstitutionName",
+      "label": "partnerInstitutionName",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-partnerInstitutionCountry",
+      "label": "partnerInstitutionCountry",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-fundingAgencyName",
+      "label": "fundingAgencyName",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-1-level-fundingAgencyCountry",
+      "label": "fundingAgencyCountry",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-startMonth",
+      "label": "startMonth",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-startYear",
+      "label": "startYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-endMonth",
+      "label": "endMonth",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-endYear",
+      "label": "endYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-professor",
+      "label": "professor",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-name",
+      "label": "name",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-highestDegree",
+      "label": "highestDegree",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-jobTitle",
+      "label": "jobTitle",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-employedSinceYear",
+      "label": "employedSinceYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-nationality",
+      "label": "nationality",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-birthYear",
+      "label": "birthYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-type",
+      "label": "type",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-habilitationYear",
+      "label": "habilitationYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-instituteName",
+      "label": "instituteName",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-schoolName",
+      "label": "schoolName",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-partnerInstitutionName",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-1-level-fundingAgencyName",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-2-level-startMonth",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-3-level-endMonth",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-4-level-professor",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "principalInvestigator"
+    },
+    {
+      "source": "dimension-0-level-partnerInstitutionName",
+      "target": "dimension-0-level-partnerInstitutionCountry",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-1-level-fundingAgencyName",
+      "target": "dimension-1-level-fundingAgencyCountry",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-startMonth",
+      "target": "dimension-2-level-startYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-3-level-endMonth",
+      "target": "dimension-3-level-endYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-professor",
+      "target": "dimension-4-level-name",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-professor",
+      "target": "dimension-4-level-highestDegree",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-professor",
+      "target": "dimension-4-level-jobTitle",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-professor",
+      "target": "dimension-4-level-employedSinceYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-professor",
+      "target": "dimension-4-level-nationality",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-professor",
+      "target": "dimension-4-level-birthYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-professor",
+      "target": "dimension-4-level-type",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-professor",
+      "target": "dimension-4-level-habilitationYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-professor",
+      "target": "dimension-4-level-instituteName",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-4-level-instituteName",
+      "target": "dimension-4-level-schoolName",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    }
+  ]
+}

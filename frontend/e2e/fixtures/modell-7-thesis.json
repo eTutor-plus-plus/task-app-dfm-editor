@@ -1,0 +1,359 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Thesis",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "duration",
+        "finalGrade"
+      ]
+    },
+    {
+      "id": "dimension-0-level-thesis",
+      "label": "thesis",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-ects",
+      "label": "ects",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-matriculationNo",
+      "label": "matriculationNo",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-gender",
+      "label": "gender",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-nationality",
+      "label": "nationality",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-birthYear",
+      "label": "birthYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-curriculumName",
+      "label": "curriculumName",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-earnedDegree",
+      "label": "earnedDegree",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-yearIntroduced",
+      "label": "yearIntroduced",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-professorEmployeeNo",
+      "label": "professorEmployeeNo",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-highestDegree",
+      "label": "highestDegree",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-jobTitle",
+      "label": "jobTitle",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-employedSinceYear",
+      "label": "employedSinceYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-professorNationality",
+      "label": "professorNationality",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-professorBirthYear",
+      "label": "professorBirthYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-type",
+      "label": "type",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-habilitationYear",
+      "label": "habilitationYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-name",
+      "label": "name",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-headOfInstitute",
+      "label": "headOfInstitute",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-instituteName",
+      "label": "instituteName",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-month-level-month",
+      "label": "month",
+      "type": "SHARED",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-month-level-year",
+      "label": "year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-schoolName-level-schoolName",
+      "label": "schoolName",
+      "type": "SHARED",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-thesis",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-thesis",
+      "target": "dimension-0-level-ects",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-thesis",
+      "target": "hierarchy-month-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "started"
+    },
+    {
+      "source": "dimension-0-level-thesis",
+      "target": "hierarchy-month-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "handedIn"
+    },
+    {
+      "source": "dimension-0-level-thesis",
+      "target": "hierarchy-month-level-month",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "graded"
+    },
+    {
+      "source": "dimension-0-level-thesis",
+      "target": "dimension-0-level-matriculationNo",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "author"
+    },
+    {
+      "source": "dimension-0-level-matriculationNo",
+      "target": "dimension-0-level-gender",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-matriculationNo",
+      "target": "dimension-0-level-nationality",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-matriculationNo",
+      "target": "dimension-0-level-birthYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-thesis",
+      "target": "dimension-0-level-curriculumName",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-curriculumName",
+      "target": "dimension-0-level-earnedDegree",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-curriculumName",
+      "target": "dimension-0-level-yearIntroduced",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-curriculumName",
+      "target": "hierarchy-schoolName-level-schoolName",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-thesis",
+      "target": "dimension-0-level-professorEmployeeNo",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "supervisor"
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-highestDegree",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-jobTitle",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-employedSinceYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-professorNationality",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-professorBirthYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-type",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-habilitationYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-name",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-headOfInstitute",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-professorEmployeeNo",
+      "target": "dimension-0-level-instituteName",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-instituteName",
+      "target": "hierarchy-schoolName-level-schoolName",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-month-level-month",
+      "target": "hierarchy-month-level-year",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    }
+  ]
+}

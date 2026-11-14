@@ -1,0 +1,566 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Invoice",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "Quantity",
+        "Net_Value",
+        "First_Commercial_Discount",
+        "Second_Commercial_Discount",
+        "Sell_In_Margin",
+        "Net_Average_Price"
+      ]
+    },
+    {
+      "id": "dimension-0-level-Date",
+      "label": "Date",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Week",
+      "label": "Week",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Month_In_Year",
+      "label": "Month_In_Year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Month",
+      "label": "Month",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Quarter",
+      "label": "Quarter",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Semester",
+      "label": "Semester",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-Year",
+      "label": "Year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-4_Month_Period",
+      "label": "4_Month_Period",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-SKU",
+      "label": "SKU",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Made_In",
+      "label": "Made_In",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Color",
+      "label": "Color",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Macro_Color",
+      "label": "Macro_Color",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Size",
+      "label": "Size",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Subtype",
+      "label": "Subtype",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Type",
+      "label": "Type",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Category",
+      "label": "Category",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Customer_Type",
+      "label": "Customer_Type",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Age_Range",
+      "label": "Age_Range",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Customer_Gender",
+      "label": "Customer_Gender",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Brand",
+      "label": "Brand",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-2-level-Brand_Group",
+      "label": "Brand_Group",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-Agent",
+      "label": "Agent",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-Controller",
+      "label": "Controller",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-3-level-Area_Manager",
+      "label": "Area_Manager",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-4-level-Currency",
+      "label": "Currency",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-5-level-Return_Justification",
+      "label": "Return_Justification",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-6-level-Goods_On_Delivery",
+      "label": "Goods_On_Delivery",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-7-level-Season",
+      "label": "Season",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-8-level-Doc_Type",
+      "label": "Doc_Type",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-9-level-Virtual_Warehouse",
+      "label": "Virtual_Warehouse",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-10-level-Profit_Center",
+      "label": "Profit_Center",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-Customer-level-Customer",
+      "label": "Customer",
+      "type": "SHARED",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-Customer-level-City",
+      "label": "City",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-Customer-level-County",
+      "label": "County",
+      "type": "LEVEL",
+      "optional": true,
+      "details": []
+    },
+    {
+      "id": "hierarchy-Customer-level-State",
+      "label": "State",
+      "type": "LEVEL",
+      "optional": true,
+      "details": []
+    },
+    {
+      "id": "hierarchy-Customer-level-Country",
+      "label": "Country",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-Customer-level-Area",
+      "label": "Area",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-Customer-level-address",
+      "label": "address",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-Date",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "hierarchy-Customer-level-Customer",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "shipping"
+    },
+    {
+      "source": "fact-0",
+      "target": "hierarchy-Customer-level-Customer",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "billing"
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-2-level-SKU",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-3-level-Agent",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-4-level-Currency",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-5-level-Return_Justification",
+      "connectionType": "SIMPLE",
+      "optional": true,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-6-level-Goods_On_Delivery",
+      "connectionType": "SIMPLE",
+      "optional": true,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-7-level-Season",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-8-level-Doc_Type",
+      "connectionType": "SIMPLE",
+      "optional": true,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-9-level-Virtual_Warehouse",
+      "connectionType": "SIMPLE",
+      "optional": true,
+      "label": null
+    },
+    {
+      "source": "fact-0",
+      "target": "dimension-10-level-Profit_Center",
+      "connectionType": "SIMPLE",
+      "optional": true,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-Date",
+      "target": "dimension-0-level-Week",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-Date",
+      "target": "dimension-0-level-Month_In_Year",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-Month_In_Year",
+      "target": "dimension-0-level-Month",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-Month_In_Year",
+      "target": "dimension-0-level-Quarter",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-Quarter",
+      "target": "dimension-0-level-Semester",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-Semester",
+      "target": "dimension-0-level-Year",
+      "connectionType": "CONVERGENCE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-Month_In_Year",
+      "target": "dimension-0-level-4_Month_Period",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-4_Month_Period",
+      "target": "dimension-0-level-Year",
+      "connectionType": "CONVERGENCE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-SKU",
+      "target": "dimension-2-level-Made_In",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-SKU",
+      "target": "dimension-2-level-Color",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-Color",
+      "target": "dimension-2-level-Macro_Color",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-SKU",
+      "target": "dimension-2-level-Size",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-SKU",
+      "target": "dimension-2-level-Subtype",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-Subtype",
+      "target": "dimension-2-level-Type",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-Type",
+      "target": "dimension-2-level-Category",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-Subtype",
+      "target": "dimension-2-level-Customer_Type",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-Customer_Type",
+      "target": "dimension-2-level-Age_Range",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-SKU",
+      "target": "dimension-2-level-Customer_Gender",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-SKU",
+      "target": "dimension-2-level-Brand",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-2-level-Brand",
+      "target": "dimension-2-level-Brand_Group",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-3-level-Agent",
+      "target": "dimension-3-level-Controller",
+      "connectionType": "MULTIPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-3-level-Agent",
+      "target": "dimension-3-level-Area_Manager",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-Customer-level-Customer",
+      "target": "hierarchy-Customer-level-City",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-Customer-level-City",
+      "target": "hierarchy-Customer-level-County",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-Customer-level-County",
+      "target": "hierarchy-Customer-level-State",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-Customer-level-State",
+      "target": "hierarchy-Customer-level-Country",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-Customer-level-Country",
+      "target": "hierarchy-Customer-level-Area",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-Customer-level-Customer",
+      "target": "hierarchy-Customer-level-address",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    }
+  ]
+}

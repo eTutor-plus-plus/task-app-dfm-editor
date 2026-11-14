@@ -1,0 +1,250 @@
+{
+  "nodes": [
+    {
+      "id": "fact-0",
+      "label": "Evaluation_1MNF",
+      "type": "FACT",
+      "optional": false,
+      "details": [
+        "overallQualityScore",
+        "didacticQualityScore",
+        "contentQualityScore",
+        "effortPerWeek",
+        "finalGrade"
+      ]
+    },
+    {
+      "id": "dimension-0-level-enrollment",
+      "label": "enrollment",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-realization",
+      "label": "realization",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-course",
+      "label": "course",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-courseType",
+      "label": "courseType",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-name",
+      "label": "name",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-workload",
+      "label": "workload",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-hoursPerWeek",
+      "label": "hoursPerWeek",
+      "type": "DESCRIPTIVE",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-semester",
+      "label": "semester",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-year",
+      "label": "year",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-season",
+      "label": "season",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-student",
+      "label": "student",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-birthYear",
+      "label": "birthYear",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-nationality",
+      "label": "nationality",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "dimension-0-level-gender",
+      "label": "gender",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-curriculum-level-curriculum",
+      "label": "curriculum",
+      "type": "SHARED",
+      "optional": false,
+      "details": []
+    },
+    {
+      "id": "hierarchy-curriculum-level-school",
+      "label": "school",
+      "type": "LEVEL",
+      "optional": false,
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "source": "fact-0",
+      "target": "dimension-0-level-enrollment",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-enrollment",
+      "target": "dimension-0-level-realization",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-realization",
+      "target": "dimension-0-level-course",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-course",
+      "target": "dimension-0-level-courseType",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-course",
+      "target": "dimension-0-level-name",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-course",
+      "target": "dimension-0-level-workload",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-course",
+      "target": "dimension-0-level-hoursPerWeek",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-realization",
+      "target": "dimension-0-level-semester",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-semester",
+      "target": "dimension-0-level-year",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-semester",
+      "target": "dimension-0-level-season",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-enrollment",
+      "target": "dimension-0-level-student",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-student",
+      "target": "dimension-0-level-birthYear",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-student",
+      "target": "dimension-0-level-nationality",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-student",
+      "target": "dimension-0-level-gender",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "dimension-0-level-student",
+      "target": "hierarchy-curriculum-level-curriculum",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": "primaryStudies"
+    },
+    {
+      "source": "dimension-0-level-enrollment",
+      "target": "hierarchy-curriculum-level-curriculum",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    },
+    {
+      "source": "hierarchy-curriculum-level-curriculum",
+      "target": "hierarchy-curriculum-level-school",
+      "connectionType": "SIMPLE",
+      "optional": false,
+      "label": null
+    }
+  ]
+}

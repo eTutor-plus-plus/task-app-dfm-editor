@@ -1,0 +1,16 @@
+{
+  "nodes": [
+    { "id": "fact-0", "label": "Thesis", "type": "FACT", "optional": false, "details": ["duration"] },
+    { "id": "dimension-0-level-thesis", "label": "thesis", "type": "LEVEL", "optional": false, "details": [] },
+    { "id": "hierarchy-month-level-month", "label": "month", "type": "SHARED", "optional": false, "details": [] },
+    { "id": "hierarchy-month-level-year", "label": "year", "type": "LEVEL", "optional": false, "details": [] }
+  ],
+  "edges": [
+    { "source": "fact-0", "target": "dimension-0-level-thesis", "connectionType": "SIMPLE", "optional": true, "label": "author" },
+    { "source": "fact-0", "target": "dimension-0-level-thesis", "connectionType": "MULTIPLE", "optional": false, "label": "reviewer" },
+    { "source": "dimension-0-level-thesis", "target": "hierarchy-month-level-month", "connectionType": "SIMPLE", "optional": false, "label": "started" },
+    { "source": "dimension-0-level-thesis", "target": "hierarchy-month-level-month", "connectionType": "SIMPLE", "optional": true, "label": "handedIn" },
+    { "source": "dimension-0-level-thesis", "target": "hierarchy-month-level-month", "connectionType": "MULTIPLE", "optional": false, "label": "graded" },
+    { "source": "hierarchy-month-level-month", "target": "hierarchy-month-level-year", "connectionType": "SIMPLE", "optional": false, "label": null }
+  ]
+}
