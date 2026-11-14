@@ -91,6 +91,25 @@ class DfmGraphMapperTest {
     }
 
     @Test
+    void mapsParallelFactConnectionsWithTheirOwnProperties() {
+        var graph = new DfmGraphMapper().map(new DfmParser().parse("""
+            fact Invoice { quantity; };
+            dimension Customer { customer - city; };
+            Invoice (-[shipping]-) Customer;
+            Invoice =[billing]= Customer;
+            """));
+        var shipping = graph.edges().stream().filter(edge -> "shipping".equals(edge.label())).findFirst().orElseThrow();
+        var billing = graph.edges().stream().filter(edge -> "billing".equals(edge.label())).findFirst().orElseThrow();
+        assertEquals(shipping.source(), billing.source());
+        assertEquals(shipping.target(), billing.target());
+        assertTrue(shipping.optional());
+        assertEquals("SIMPLE", shipping.connectionType());
+        assertFalse(billing.optional());
+        assertEquals("MULTIPLE", billing.connectionType());
+        assertEquals(1, graph.nodes().stream().filter(node -> "customer".equals(node.label())).count());
+    }
+
+    @Test
     void connectsFactOnlyToFirstHierarchy() {
         var elements = new DfmParser().parse("""
             fact Sales { Revenue; };

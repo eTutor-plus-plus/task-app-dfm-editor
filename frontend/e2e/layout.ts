@@ -61,24 +61,10 @@ export function inspectGraphLayout(svg: SVGSVGElement) {
       && maximum - minimum > 0.02
   }
 
-  const nearest = (x: number, y: number) => nodes
-    .map((node) => ({ label: node.label, distance: Math.hypot(node.centerX - x, node.centerY - y) }))
-    .sort((first, second) => first.distance - second.distance)[0].label
+  const nearestNode = (x: number, y: number) => nodes
+    .map((node) => ({ node, distance: Math.hypot(node.centerX - x, node.centerY - y) }))
+    .sort((first, second) => first.distance - second.distance)[0].node
 
-  const edgesCrossingNodes = Array.from(svg.querySelectorAll<SVGLineElement>('g.edge-group line.edge'))
-    .flatMap((line) => {
-      const x1 = Number(line.getAttribute('x1'))
-      const y1 = Number(line.getAttribute('y1'))
-      const x2 = Number(line.getAttribute('x2'))
-      const y2 = Number(line.getAttribute('y2'))
-      return nodes
-        .filter((node) => Math.hypot(node.centerX - x1, node.centerY - y1) >= 5
-          && Math.hypot(node.centerX - x2, node.centerY - y2) >= 5
-          && crossesBox(x1, y1, x2, y2, node))
-        .map((node) => `${nearest(x1, y1)} -> ${nearest(x2, y2)} crosses ${node.label}`)
-    })
-
-  // self-loops are drawn as a path and have no lines
   const edgeGroups = Array.from(svg.querySelectorAll<SVGGElement>('g.edge-group')).map((group) => {
     const lines = Array.from(group.querySelectorAll<SVGLineElement>('line.edge')).map((line) => ({
       x1: Number(line.getAttribute('x1')),
@@ -86,10 +72,27 @@ export function inspectGraphLayout(svg: SVGSVGElement) {
       x2: Number(line.getAttribute('x2')),
       y2: Number(line.getAttribute('y2')),
     }))
+    const paths = Array.from(group.querySelectorAll<SVGPathElement>('path.parallel-edge'))
+    for (const path of paths) {
+      const length = path.getTotalLength()
+      let previous = path.getPointAtLength(0)
+      for (let i = 1; i <= 24; i += 1) {
+        const next = path.getPointAtLength(length * i / 24)
+        lines.push({ x1: previous.x, y1: previous.y, x2: next.x, y2: next.y })
+        previous = next
+      }
+    }
     const first = lines[0]
     const last = lines[lines.length - 1]
-    return { lines, name: first ? `${nearest(first.x1, first.y1)} -> ${nearest(last.x2, last.y2)}` : '' }
+    const start = first ? nearestNode(first.x1, first.y1) : undefined
+    const end = last ? nearestNode(last.x2, last.y2) : undefined
+    return { lines, group, start, end, name: first ? `${start?.label} -> ${end?.label}` : '' }
   }).filter((group) => group.lines.length > 0)
+
+  const edgesCrossingNodes = edgeGroups.flatMap((group) => nodes
+    .filter((node) => node !== group.start && node !== group.end
+      && group.lines.some((line) => crossesBox(line.x1, line.y1, line.x2, line.y2, node)))
+    .map((node) => `${group.name} crosses ${node.label}`))
 
   function properCrossing(first: (typeof edgeGroups)[number]['lines'][number], second: typeof first) {
     const rx = first.x2 - first.x1
@@ -157,21 +160,27 @@ export function inspectGraphLayout(svg: SVGSVGElement) {
     .filter((second) => intersects(first, second))
     .map((second) => `${first.text} / ${second.text}`))
 
+  const loopPaths = Array.from(svg.querySelectorAll<SVGPathElement>('g.edge-group path.loop-edge'))
+    .map((path) => {
+      const length = path.getTotalLength()
+      const lines = []
+      let previous = path.getPointAtLength(0)
+      for (let i = 1; i <= 24; i += 1) {
+        const next = path.getPointAtLength(length * i / 24)
+        lines.push({ x1: previous.x, y1: previous.y, x2: next.x, y2: next.y })
+        previous = next
+      }
+      return { group: path.parentElement, lines }
+    })
+
   // a label that sits on the line of a different edge is easily read as belonging to that edge
-  const labelsOnForeignEdges = edgeLabels.flatMap((label) => Array.from(
-    svg.querySelectorAll<SVGLineElement>('g.edge-group line.edge'),
-  )
-    .filter((line) => Array.from(svg.querySelectorAll('g.edge-group')).indexOf(line.parentElement as Element)
-      !== label.group)
-    .filter((line) => crossesBox(
-      Number(line.getAttribute('x1')), Number(line.getAttribute('y1')),
-      Number(line.getAttribute('x2')), Number(line.getAttribute('y2')),
-      label,
-    ))
+  const labelsOnForeignEdges = edgeLabels.flatMap((label) => [...edgeGroups, ...loopPaths]
+    .filter((group) => Array.from(svg.querySelectorAll('g.edge-group')).indexOf(group.group as Element) !== label.group)
+    .filter((group) => group.lines.some((line) => crossesBox(line.x1, line.y1, line.x2, line.y2, label)))
     .map(() => label.text))
 
   // the loop of a recursive hierarchy and its role must not cover other nodes
-  const loopsCoveringNodes = Array.from(svg.querySelectorAll<SVGPathElement>('g.edge-group path.edge'))
+  const loopsCoveringNodes = Array.from(svg.querySelectorAll<SVGPathElement>('g.edge-group path.loop-edge'))
     .flatMap((path) => {
       const box = path.getBBox()
       const start = path.getPointAtLength(0)
@@ -192,10 +201,11 @@ export function inspectGraphLayout(svg: SVGSVGElement) {
   // longest edge between node borders, in diagram units; very long edges make hierarchies fall apart
   const longestEdge = Math.max(0, ...Array.from(svg.querySelectorAll<SVGGElement>('g.edge-group')).map((group) => {
     const line = group.querySelector<SVGLineElement>('line.edge')
+    const path = group.querySelector<SVGPathElement>('path.parallel-edge')
     return line
       ? Math.hypot(Number(line.getAttribute('x2')) - Number(line.getAttribute('x1')),
         Number(line.getAttribute('y2')) - Number(line.getAttribute('y1')))
-      : 0
+      : path?.getTotalLength() ?? 0
   }))
 
   svg.style.setProperty('text-rendering', textRendering)

@@ -14,6 +14,7 @@ export interface DfmEdge {
   connectionType: string
   optional: boolean
   label?: string | null
+  parallelOffset?: number
 }
 
 export interface DfmGraph {

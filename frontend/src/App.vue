@@ -87,7 +87,8 @@ function isDfmGraph(value: unknown): value is DfmGraph {
       && 'source' in edge
       && typeof edge.source === 'string'
       && 'target' in edge
-      && typeof edge.target === 'string')
+      && typeof edge.target === 'string'
+      && !(edge.source === edge.target && 'connectionType' in edge && edge.connectionType === 'MULTIPLE'))
 }
 
 async function visualize() {

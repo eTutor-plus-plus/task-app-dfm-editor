@@ -15,6 +15,7 @@ interface SimLink {
   connectionType: string
   optional: boolean
   label?: string | null
+  parallelOffset?: number
   hidden?: boolean
   // distance by which the layout moved the label along the edge
   labelShift?: number
@@ -61,7 +62,7 @@ function isSelfLink(link: { source: LinkEnd; target: LinkEnd }) {
 
 // Geometry of a self-loop at a positioned node. The loop points upwards (the name of a level hangs below the node)
 // and as far away from the connected edges as possible.
-function selfLoopShape(node: SimNode, links: SimLink[], label?: string | null) {
+function selfLoopShape(node: SimNode, links: SimLink[], label?: string | null, offset = 0) {
   const x = node.x ?? 0
   const y = node.y ?? 0
 
@@ -94,7 +95,7 @@ function selfLoopShape(node: SimNode, links: SimLink[], label?: string | null) {
   const perpendicularY = directionX
 
   const startAlong = Math.sqrt(LEVEL_RADIUS * LEVEL_RADIUS - SELF_LOOP_HALF_GAP * SELF_LOOP_HALF_GAP)
-  const controlAlong = LEVEL_RADIUS + SELF_LOOP_HEIGHT
+  const controlAlong = LEVEL_RADIUS + SELF_LOOP_HEIGHT + offset
   const point = (across: number, along: number) => ({
     x: x + perpendicularX * across + directionX * along,
     y: y + perpendicularY * across + directionY * along,
@@ -103,17 +104,30 @@ function selfLoopShape(node: SimNode, links: SimLink[], label?: string | null) {
   const end = point(SELF_LOOP_HALF_GAP, startAlong)
   const first = point(-SELF_LOOP_HALF_WIDTH, controlAlong)
   const second = point(SELF_LOOP_HALF_WIDTH, controlAlong)
+  const path = `M ${start.x} ${start.y} C ${first.x} ${first.y}, ${second.x} ${second.y}, ${end.x} ${end.y}`
 
   const tip = 0.75 * controlAlong + 0.25 * startAlong
   const halfWidth = (label?.length ?? 0) * 6.6 / 2
   const extent = Math.abs(directionX) * halfWidth + Math.abs(directionY) * 7
-  const labelCenter = point(0, tip + 9 + extent)
+  let labelCenter = point(0, tip + 9 + extent)
+  const outermostOffset = Math.max(0, ...links.filter((link) => isSelfLink(link) && endId(link.source) === node.id)
+    .map((link) => link.parallelOffset ?? 0))
+  if (offset < outermostOffset) {
+    const outerControl = LEVEL_RADIUS + SELF_LOOP_HEIGHT + outermostOffset + 4
+    const outerLeft = Math.min(start.x, end.x, point(-SELF_LOOP_HALF_WIDTH, outerControl).x,
+      point(SELF_LOOP_HALF_WIDTH, outerControl).x)
+    labelCenter = { x: outerLeft - halfWidth - 9, y: point(0, tip).y }
+  }
+  const markerStart = point(0, tip - 5)
+  const markerEnd = point(0, tip + 5)
   const labelHalfHeight = label ? 7 : 0
   const xs = [start.x, end.x, first.x, second.x, labelCenter.x - halfWidth, labelCenter.x + halfWidth]
   const ys = [start.y, end.y, first.y, second.y, labelCenter.y - labelHalfHeight, labelCenter.y + labelHalfHeight]
 
   return {
-    path: `M ${start.x} ${start.y} C ${first.x} ${first.y}, ${second.x} ${second.y}, ${end.x} ${end.y}`,
+    path,
+    markerStart,
+    markerEnd,
     labelX: labelCenter.x,
     labelY: labelCenter.y,
     // area of the loop and its role
@@ -319,12 +333,30 @@ function segmentCrossesBox(x1: number, y1: number, x2: number, y2: number, box: 
     && maximum > minimum
 }
 
+function edgeCrossesBox(source: SimNode, target: SimNode, offset: number | undefined, box: Box) {
+  const sx = source.x ?? 0, sy = source.y ?? 0, tx = target.x ?? 0, ty = target.y ?? 0
+  if (offset === undefined) return segmentCrossesBox(sx, sy, tx, ty, box)
+  const length = Math.hypot(tx - sx, ty - sy) || 1
+  const px = -(ty - sy) / length, py = (tx - sx) / length
+  let x = sx, y = sy
+  for (let i = 1; i <= 24; i += 1) {
+    const t = i / 24
+    const bend = 4 * t * (1 - t) * offset
+    const nextX = sx + (tx - sx) * t + px * bend
+    const nextY = sy + (ty - sy) * t + py * bend
+    if (segmentCrossesBox(x, y, nextX, nextY, box)) return true
+    x = nextX
+    y = nextY
+  }
+  return false
+}
+
 // Center of the label of an edge. The label belongs to the visible part of the edge (between the node borders);
 // only optional and convergence edges keep their middle free for the marker or arrow, so the label is shifted
 // there towards the lower node because node names hang below the nodes. The layout may move a label along its edge
 // by `shift` to get it clear of other edges; it always stays within the visible part.
 function edgeLabelCenter(
-  link: { label?: string | null; optional: boolean; connectionType: string },
+  link: { label?: string | null; optional: boolean; connectionType: string; parallelOffset?: number },
   source: SimNode,
   target: SimNode,
   shift = 0,
@@ -338,6 +370,10 @@ function edgeLabelCenter(
   const unitY = deltaY / length
   const perpendicularX = -unitY
   const perpendicularY = unitX
+  const withCurve = (x: number, y: number, fraction: number) => {
+    const offset = (link.parallelOffset ?? 0) * 4 * fraction * (1 - fraction)
+    return { x: x + perpendicularX * offset, y: y + perpendicularY * offset }
+  }
   const startClip = borderDistance(source, unitX, unitY)
   const endClip = borderDistance(target, -unitX, -unitY)
   const visibleLength = length - startClip - endClip
@@ -353,7 +389,8 @@ function edgeLabelCenter(
     // the edge is too short, so the label is placed beside the edge instead
     const side = perpendicularY > 0 ? -1 : 1
     const offset = 9 + Math.abs(perpendicularX) * labelHalfWidth + Math.abs(perpendicularY) * labelHalfHeight
-    return { x: visibleMiddleX + perpendicularX * side * offset, y: visibleMiddleY + perpendicularY * side * offset }
+    return withCurve(visibleMiddleX + perpendicularX * side * offset, visibleMiddleY + perpendicularY * side * offset,
+      (startClip + length - endClip) / (2 * length))
   }
   // position along the edge, measured from the center of the source
   const middle = (startClip + length - endClip) / 2
@@ -361,7 +398,7 @@ function edgeLabelCenter(
   let along = (reserveMiddle ? middle + towardsLower * (extent + 9) : middle) + shift
   along = Math.min(length - endClip - extent - 1, Math.max(startClip + extent + 1, along))
   if (reserveMiddle && towardsLower * (along - middle) < extent + 9) along = middle + towardsLower * (extent + 9)
-  return { x: sourceX + unitX * along, y: sourceY + unitY * along }
+  return withCurve(sourceX + unitX * along, sourceY + unitY * along, along / length)
 }
 
 const LEVEL_GAP = 90
@@ -686,7 +723,7 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
       for (const edge of treeEdges) {
         const source = byId.get(edge.source)!
         const target = byId.get(edge.target)!
-        const crosses = (box: Box) => segmentCrossesBox(source.x ?? 0, source.y ?? 0, target.x ?? 0, target.y ?? 0, box)
+        const crosses = (box: Box) => edgeCrossesBox(source, target, edge.parallelOffset, box)
         if (members.some((node) => node !== source && node !== target && crosses(nodeBox(node, 4)))) {
           crowded.add(edge.source)
         }
@@ -704,6 +741,7 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
       // The two lines of a double edge leave a node side by side and meet the lines of a neighbouring edge
       // right there. With a small angle between the two edges that crossing would lie outside the node.
       treeEdges.forEach((first, index) => treeEdges.slice(index + 1).forEach((second) => {
+        if (first.source === second.source && first.target === second.target) return
         const shared = [first.source, first.target].find((id) => id === second.source || id === second.target)
         const offset = (first.connectionType === 'MULTIPLE' ? 2.5 : 0) + (second.connectionType === 'MULTIPLE' ? 2.5 : 0)
         if (!shared || offset === 0 || !isCircle(byId.get(shared)!)) return
@@ -737,11 +775,11 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
       const crossing = (edge: DfmEdge, box: Box) => {
         const source = byId.get(edge.source)!
         const target = byId.get(edge.target)!
-        return segmentCrossesBox(source.x ?? 0, source.y ?? 0, target.x ?? 0, target.y ?? 0, box)
+        return edgeCrossesBox(source, target, edge.parallelOffset, box)
       }
       for (const loop of treeLoops) {
         const node = loop.source as SimNode
-        const shape = selfLoopShape(node, resolvedLinks, loop.label)
+        const shape = selfLoopShape(node, resolvedLinks, loop.label, loop.parallelOffset)
         if (loop.label && kidsOf(node.id).length > 0) {
           const halfWidth = loop.label.length * 3.3 + 3
           const role = { left: shape.labelX - halfWidth, top: shape.labelY - 9, right: shape.labelX + halfWidth, bottom: shape.labelY + 9 }
@@ -756,7 +794,7 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
           || labels.some((label) => boxesOverlap(area, label.box))
           || treeEdges.some((edge) => edge.source !== node.id && edge.target !== node.id && crossing(edge, area))
           || treeLoops.some((other) => other.source !== node
-            && boxesOverlap(area, selfLoopShape(other.source as SimNode, resolvedLinks, other.label).bounds))
+            && boxesOverlap(area, selfLoopShape(other.source as SimNode, resolvedLinks, other.label, other.parallelOffset).bounds))
         if (!inTheWay) continue
         if ((loopRoom.get(node.id) ?? 0) < 192) {
           loopRoom.set(node.id, (loopRoom.get(node.id) ?? 0) + 16)
@@ -777,7 +815,7 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
         && !members.some((node) => boxesOverlap(box, nodeBox(node, 1)))
         && !labels.some((label) => label.edge !== edge && boxesOverlap(box, label.box))
         && !treeLoops.some((loop) =>
-          boxesOverlap(box, selfLoopShape(loop.source as SimNode, resolvedLinks, loop.label).bounds))
+          boxesOverlap(box, selfLoopShape(loop.source as SimNode, resolvedLinks, loop.label, loop.parallelOffset).bounds))
       const slide = (edge: DfmEdge) => {
         const current = labelBox(edge, shiftOf(edge))
         const length = Math.hypot((byId.get(edge.target)!.x ?? 0) - (byId.get(edge.source)!.x ?? 0),
@@ -833,7 +871,8 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
       const total = place()
       if (!repair(total) && pass >= 2) break
     }
-    const loopBounds = treeLoops.map((loop) => selfLoopShape(loop.source as SimNode, resolvedLinks, loop.label).bounds)
+    const loopBounds = treeLoops.map((loop) => selfLoopShape(loop.source as SimNode, resolvedLinks, loop.label,
+      loop.parallelOffset).bounds)
     return { root, members, loopBounds }
   })
 
@@ -882,9 +921,21 @@ function renderGraph(graph: DfmGraph | null) {
   const height = 600
   // the layout is computed once and the diagram is static, only the view can be zoomed and panned
   const nodes: SimNode[] = graph.nodes.map((node) => ({ ...node }))
-  const labelShifts = placeTrees(nodes, graph.edges)
+  const edgeGroups = new Map<string, DfmEdge[]>()
+  graph.edges.forEach((edge) => {
+    const key = JSON.stringify([edge.source, edge.target])
+    edgeGroups.set(key, [...(edgeGroups.get(key) ?? []), edge])
+  })
+  const layoutEdges = graph.edges.map((edge) => {
+    const group = edgeGroups.get(JSON.stringify([edge.source, edge.target]))!
+    if (group.length < 2) return { ...edge }
+    if (edge.source === edge.target) return { ...edge, parallelOffset: group.indexOf(edge) * 40 }
+    const spacing = Math.max(50, Math.max(...group.map((item) => item.label?.length ?? 0)) * 6.6 + 16)
+    return { ...edge, parallelOffset: (group.indexOf(edge) - (group.length - 1) / 2) * spacing }
+  })
+  const labelShifts = placeTrees(nodes, layoutEdges)
   const nodeById = new Map(nodes.map((node) => [node.id, node]))
-  const links: SimLink[] = graph.edges.flatMap((edge) => {
+  const links: SimLink[] = layoutEdges.flatMap((edge) => {
     const source = nodeById.get(edge.source)
     const target = nodeById.get(edge.target)
     return source && target ? [{ ...edge, source, target, labelShift: labelShifts.get(edge) ?? 0 }] : []
@@ -923,8 +974,24 @@ function renderGraph(graph: DfmGraph | null) {
       group.selectAll<SVGPathElement, number>('path.edge')
         .data([0])
         .join('path')
-        .attr('class', 'edge')
+        .attr('class', 'edge loop-edge')
         .attr('marker-end', link.connectionType === 'CONVERGENCE' ? 'url(#convergence-arrow)' : null)
+      group.selectAll<SVGLineElement, number>('line.optional-edge-marker')
+        .data(link.optional ? [0] : [])
+        .join('line')
+        .attr('class', 'optional-edge-marker')
+    } else if (link.parallelOffset !== undefined) {
+      const segmentCount = link.connectionType === 'MULTIPLE' || link.connectionType === 'CONVERGENCE' ? 2 : 1
+      group.selectAll<SVGPathElement, number>('path.edge')
+        .data(Array.from({ length: segmentCount }, (_, index) => index))
+        .join('path')
+        .attr('class', 'edge parallel-edge')
+        .attr('marker-end', (index) => link.connectionType === 'CONVERGENCE' && index === 0
+          ? 'url(#convergence-arrow)' : null)
+      group.selectAll<SVGLineElement, number>('line.optional-edge-marker')
+        .data(link.optional ? [0] : [])
+        .join('line')
+        .attr('class', 'optional-edge-marker')
     } else {
       const segmentCount = link.connectionType === 'MULTIPLE' || link.connectionType === 'CONVERGENCE'
         ? 2
@@ -1052,8 +1119,11 @@ function renderGraph(graph: DfmGraph | null) {
   const updatePositions = () => {
     edgeSelection.each(function (link) {
       if (isSelfLink(link)) {
-        const shape = selfLoopShape(link.source as SimNode, links, link.label)
+        const shape = selfLoopShape(link.source as SimNode, links, link.label, link.parallelOffset)
         select(this).select('path.edge').attr('d', shape.path)
+        select(this).select('line.optional-edge-marker')
+          .attr('x1', shape.markerStart.x).attr('y1', shape.markerStart.y)
+          .attr('x2', shape.markerEnd.x).attr('y2', shape.markerEnd.y)
         select(this).select('text.edge-label').attr('x', shape.labelX).attr('y', shape.labelY + 4)
         return
       }
@@ -1070,6 +1140,20 @@ function renderGraph(graph: DfmGraph | null) {
       const perpendicularY = deltaX / length
       const middleX = (sourceX + targetX) / 2
       const middleY = (sourceY + targetY) / 2
+
+      if (link.parallelOffset !== undefined) {
+        select(this).selectAll<SVGPathElement, number>('path.edge').attr('d', (index) => {
+          const offset = link.parallelOffset! + (link.connectionType === 'MULTIPLE' ? (index === 0 ? 2.5 : -2.5) : 0)
+          const cx = middleX + perpendicularX * offset * 2
+          const cy = middleY + perpendicularY * offset * 2
+          if (link.connectionType !== 'CONVERGENCE') return `M ${sourceX} ${sourceY} Q ${cx} ${cy} ${targetX} ${targetY}`
+          const mx = (sourceX + 2 * cx + targetX) / 4
+          const my = (sourceY + 2 * cy + targetY) / 4
+          return index === 0
+            ? `M ${sourceX} ${sourceY} Q ${(sourceX + cx) / 2} ${(sourceY + cy) / 2} ${mx} ${my}`
+            : `M ${mx} ${my} Q ${(targetX + cx) / 2} ${(targetY + cy) / 2} ${targetX} ${targetY}`
+        })
+      }
 
       select(this).selectAll<SVGLineElement, number>('line.edge')
         .attr('x1', (index) => {
@@ -1098,10 +1182,10 @@ function renderGraph(graph: DfmGraph | null) {
         })
 
       select(this).select<SVGLineElement>('line.optional-edge-marker')
-        .attr('x1', middleX + perpendicularX * 5)
-        .attr('y1', middleY + perpendicularY * 5)
-        .attr('x2', middleX - perpendicularX * 5)
-        .attr('y2', middleY - perpendicularY * 5)
+        .attr('x1', middleX + perpendicularX * ((link.parallelOffset ?? 0) + 5))
+        .attr('y1', middleY + perpendicularY * ((link.parallelOffset ?? 0) + 5))
+        .attr('x2', middleX + perpendicularX * ((link.parallelOffset ?? 0) - 5))
+        .attr('y2', middleY + perpendicularY * ((link.parallelOffset ?? 0) - 5))
 
       const labelCenter = edgeLabelCenter(link, source, target, link.labelShift ?? 0)
       select(this).select<SVGTextElement>('text.edge-label')

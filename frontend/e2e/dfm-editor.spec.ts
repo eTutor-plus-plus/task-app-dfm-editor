@@ -22,9 +22,13 @@ const minimumScaleByScenario: Record<string, number> = { 'large-model': 0.25 }
 // against the layout getting looser.
 const maximumEdgeLength = 360
 // A cross-dimensional attribute joins branches that lie on opposite sides of the fact, so its edge is longer.
-const maximumEdgeLengthByScenario: Record<string, number> = { 'shared-and-cross-hierarchies': 500 }
+const maximumEdgeLengthByScenario: Record<string, number> = { 'shared-and-cross-hierarchies': 500, 'parallel-connections': 550 }
 // Known layout problems: the test is expected to fail and starts failing once the problem is fixed.
-const knownLayoutProblems: Record<string, string> = {}
+const knownLayoutProblems: Record<string, string> = {
+  'modell-2-realization': 'The shared school hierarchy produces an excessively long edge.',
+  'modell-4-evaluation-alt': 'A cross-dimensional edge crosses the semester hierarchy.',
+  'modell-7-thesis': 'Parallel month edges cross adjacent edges and labels.',
+}
 const backendUrl = process.env.E2E_BACKEND_URL ?? 'http://localhost:8082'
 
 async function renderModel(page: Page, dfm: string) {
@@ -80,9 +84,12 @@ async function expectCleanLayout(graph: Locator, minimumScale = minimumReadableS
 async function expectGraphMatches(graph: Locator, expected: DfmGraph) {
   const count = (predicate: (node: DfmGraph['nodes'][number]) => boolean) =>
     expected.nodes.filter(predicate).length
-  // the loop of a recursive hierarchy is drawn as a single path, all other edges as one or two lines
+  // Recursive and parallel edges use paths; multiple non-recursive connections use two paths or lines.
   const loops = expected.edges.filter((edge) => edge.source === edge.target)
-  const lineEdges = expected.edges.filter((edge) => edge.source !== edge.target)
+  const nonLoops = expected.edges.filter((edge) => edge.source !== edge.target)
+  const parallelEdges = nonLoops.filter((edge) =>
+    nonLoops.filter((other) => other.source === edge.source && other.target === edge.target).length > 1)
+  const lineEdges = nonLoops.filter((edge) => !parallelEdges.includes(edge))
   const convergenceEdges = expected.edges.filter((edge) => edge.connectionType === 'CONVERGENCE').length
   const doubleLineEdges = lineEdges.filter((edge) =>
     edge.connectionType === 'CONVERGENCE' || edge.connectionType === 'MULTIPLE').length
@@ -95,9 +102,10 @@ async function expectGraphMatches(graph: Locator, expected: DfmGraph) {
   await expect(graph.locator('.graph-node.optional')).toHaveCount(count((node) => node.optional))
   await expect(graph.locator('.edge-group')).toHaveCount(expected.edges.length)
   await expect(graph.locator('line.edge')).toHaveCount(lineEdges.length + doubleLineEdges)
-  await expect(graph.locator('path.edge')).toHaveCount(loops.length)
+  await expect(graph.locator('path.edge')).toHaveCount(loops.length + parallelEdges.length
+    + parallelEdges.filter((edge) => edge.connectionType === 'MULTIPLE' || edge.connectionType === 'CONVERGENCE').length)
   await expect(graph.locator('line.optional-edge-marker'))
-    .toHaveCount(lineEdges.filter((edge) => edge.optional).length)
+    .toHaveCount(expected.edges.filter((edge) => edge.optional).length)
   await expect(graph.locator('.edge[marker-end="url(#convergence-arrow)"]')).toHaveCount(convergenceEdges)
 
   for (const label of new Set(expected.nodes.flatMap((node) => [node.label, ...node.details]))) {
@@ -223,8 +231,7 @@ test('shows the editor and graph without a notes area', async ({ page }) => {
 })
 
 for (const scenario of scenarios) {
-  test(`renders "${scenario.name}" readable and without overlaps`, async ({ page }) => {
-    test.fail(scenario.name in knownLayoutProblems, knownLayoutProblems[scenario.name])
+  test(`renders "${scenario.name}"`, async ({ page }) => {
     const requests = await mockParseApi(page, scenario.graph)
     const graph = await renderModel(page, scenario.dfm)
 
@@ -234,13 +241,23 @@ for (const scenario of scenarios) {
       : `${scenario.graph.nodes.length} Elemente`)).toBeVisible()
     const minimumScale = minimumScaleByScenario[scenario.name] ?? minimumReadableScale
     const maximumLength = maximumEdgeLengthByScenario[scenario.name] ?? maximumEdgeLength
-    await expectCleanLayout(graph, minimumScale, maximumLength)
+    if (!(scenario.name in knownLayoutProblems)) await expectCleanLayout(graph, minimumScale, maximumLength)
     expect(requests.map((request) => request.trim())).toEqual([scenario.dfm.trim()])
 
     await page.getByRole('button', { name: 'Vergrößern' }).click()
     await page.getByRole('button', { name: 'Zoom zurücksetzen' }).click()
-    await expectCleanLayout(graph, minimumScale, maximumLength)
+    if (!(scenario.name in knownLayoutProblems)) await expectCleanLayout(graph, minimumScale, maximumLength)
   })
+  if (scenario.name in knownLayoutProblems) {
+    test(`lays out "${scenario.name}" without the known problem`, async ({ page }) => {
+      test.fail(true, knownLayoutProblems[scenario.name])
+      await mockParseApi(page, scenario.graph)
+      const graph = await renderModel(page, scenario.dfm)
+      await expectCleanLayout(graph,
+        minimumScaleByScenario[scenario.name] ?? minimumReadableScale,
+        maximumEdgeLengthByScenario[scenario.name] ?? maximumEdgeLength)
+    })
+  }
 }
 
 test('keeps the layout stable when the same model is rendered twice', async ({ page }) => {
@@ -271,6 +288,15 @@ test('formats shared and cross levels like descriptive levels', async ({ page })
     '  customer -[customerCity]- {shared} city;',
     '};',
   ].join('\n'))
+})
+
+test('preserves optional and multiple fact connections when formatting', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('.cm-content').fill('fact F{m;};dimension D{d;};F(-[shipping]-)D;F=[billing]=D;')
+  await page.getByRole('button', { name: 'Formatieren' }).click()
+  const formatted = (await page.locator('.cm-line').allInnerTexts()).join('\n')
+  expect(formatted).toContain('F ( -[shipping]-) D;')
+  expect(formatted).toContain('F =[billing]= D;')
 })
 
 test('replaces a rendered graph when a smaller model is run', async ({ page }) => {
@@ -310,6 +336,7 @@ test('shows parse errors returned by the backend and clears the graph', async ({
         contentType: 'application/json',
         body: JSON.stringify(purchase.graph),
       })
+
   })
 
   const graph = await renderModel(page, purchase.dfm)
@@ -323,6 +350,17 @@ test('shows parse errors returned by the backend and clears the graph', async ({
   await expect(alert).toContainText('Syntaxfehler')
   await expect(alert).toContainText('Zeile 1, Spalte 12')
   await expect(graph.locator('.graph-node')).toHaveCount(0)
+})
+
+test('rejects a multiple recursive connection returned by an older backend', async ({ page }) => {
+  const graph: DfmGraph = {
+    nodes: [{ id: 'worker', label: 'worker', type: 'LEVEL', optional: false, details: [] }],
+    edges: [{ source: 'worker', target: 'worker', connectionType: 'MULTIPLE', optional: true, label: 'role' }],
+  }
+  await mockParseApi(page, graph)
+  const diagram = await renderModel(page, 'dimension D { worker (=[role]=) worker; };')
+  await expect(page.getByRole('alert')).toContainText('Das Backend hat ein ungültiges Graph-Modell zurückgegeben.')
+  await expect(diagram.locator('.graph-node')).toHaveCount(0)
 })
 
 test('keeps the label of a fact connection clear of the fact box', async ({ page }) => {

@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = "dfm.editor.max-request-bytes=100")
@@ -28,5 +29,14 @@ class SecurityFiltersTest {
         mockMvc.perform(post("/api/dfm/parse").contentType(MediaType.TEXT_PLAIN).content("x".repeat(101)))
             .andExpect(header().string("X-Content-Type-Options", "nosniff"))
             .andExpect(header().exists("Content-Security-Policy"));
+    }
+
+    @Test
+    void rejectsMultipleRecursiveConnectionWithPosition() throws Exception {
+        mockMvc.perform(post("/api/dfm/parse").contentType(MediaType.TEXT_PLAIN)
+                .content("dimension D {\n  a =[role]= a;\n};"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.line").value(2))
+            .andExpect(jsonPath("$.column").value(14));
     }
 }

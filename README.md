@@ -12,6 +12,10 @@ Im Entwicklungsmodus läuft das Frontend mit Vite auf Port 5173 und leitet `/api
 
 Der Editor unterstützt Zeilenkommentare mit `//` (Syntax-Highlighting, Umschalten mit `Strg+/`; die Formatierung erhält Kommentare) und Beschreibungen an Hierarchie-Verbindungen, z. B. `customer -[customercity]- city` (auch `=[text]=` und `-[text]->`) sowie an Fakt-Dimension-Verbindungen, z. B. `Sales -[soldat]- Time`. Beschreibungen werden als Beschriftung an der Kante dargestellt (bei Fakt-Dimension-Verbindungen an der Kante vom Fakt zum ersten Level der Dimension). Beides wird vom Core-Parser ab Version 1.4.0 unterstützt.
 
+Fakt-Dimension-Verbindungen können optional oder mehrfach sein, z. B. `Sales (-) Time;`, `Sales = Time;` oder `Sales (-[soldat]-) Time;`. Mehrere Rollen zur selben Dimension sind möglich (`Invoice -[shipping]- Customer; Invoice -[billing]- Customer;`); unterschiedliche parallele Verbindungen werden getrennt dargestellt. Diese Funktionen benötigen Core ab Version 1.6.0.
+
+Rekursive Hierarchien unterstützen optionale Verbindungen, beispielsweise `worker (-[supervisor]-) worker;`. Mehrfache rekursive Verbindungen (`=`) sind nicht zulässig; zwischen verschiedenen Levels bleiben mehrfache Verbindungen möglich.
+
 Geteilte Hierarchien und Cross-Dimensional Attributes werden einmal mit `hierarchy Name { Kette; ... };` deklariert und mit `{shared} Name` bzw. `{cross} Name` am Ende einer Kette referenziert, z. B. `customer -[customerCity]- {shared} city;` oder `country - {cross} VAT;` (Core-Parser ab Version 1.5.0). Die Deklaration ist verpflichtend. Der Einstiegsknoten der Hierarchie wird als Doppelkreis (`{shared}`) bzw. als Kreis mit Bogen (`{cross}`) dargestellt; Syntax-Highlighting und Formatierung kennen die Marker.
 
 ## Voraussetzungen
@@ -28,6 +32,8 @@ Solange `task-app-dfm-core` noch nicht in GitHub Packages veröffentlicht ist, m
 ```powershell
 .\mvnw.cmd clean install
 ```
+
+Der aktuelle Entwicklungsstand verwendet `task-app-dfm-core:1.6.0-SNAPSHOT`. Diese Version muss lokal installiert oder im Maven-Repository verfügbar sein; das lokale Installieren allein stellt sie dem isolierten Docker-Build nicht zur Verfügung.
 
 Danach das Backend starten:
 
@@ -57,7 +63,11 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Die Tests prüfen für jedes Szenario Graph-Inhalt, Überlappungen von Knoten, Kanten durch fremde Knoten, sich kreuzende Kanten, verdeckte oder sich überlappende Kantenbeschriftungen, Schleifen rekursiver Hierarchien über anderen Knoten, abgeschnittene Knoten und eine lesbare Mindestskalierung. Zusätzlich werden 60 zufällig erzeugte Modelle mit festen Startwerten auf dieselben Layout-Kriterien geprüft (`frontend/e2e/random-layout.spec.ts`). Weitere Zufallsmodelle lassen sich über einen Bereich von Startwerten prüfen; mit `E2E_LAYOUT_REPORT=1` werden die Befunde je Modell ausgegeben, statt den Test fehlschlagen zu lassen:
+Die Tests prüfen für jedes Szenario Graph-Inhalt, Überlappungen von Knoten, Kanten durch fremde Knoten, sich kreuzende Kanten, verdeckte oder sich überlappende Kantenbeschriftungen, Schleifen rekursiver Hierarchien über anderen Knoten, abgeschnittene Knoten und eine lesbare Mindestskalierung. Zusätzlich werden 60 zufällig erzeugte Modelle mit festen Startwerten auf dieselben Layout-Kriterien geprüft (`frontend/e2e/random-layout.spec.ts`).
+
+Bei `modell-2-realization`, `modell-4-evaluation-alt` und `modell-7-thesis` sind Layoutprobleme bekannt. Ihre Graphinhalte werden regulär geprüft; separate Layouttests sind bis zur Behebung als erwartete Fehlschläge markiert.
+
+Weitere Zufallsmodelle lassen sich über einen Bereich von Startwerten prüfen; mit `E2E_LAYOUT_REPORT=1` werden die Befunde je Modell ausgegeben, statt den Test fehlschlagen zu lassen:
 
 ```powershell
 $env:E2E_LAYOUT_SEEDS = '61-300'
