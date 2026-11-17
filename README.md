@@ -35,7 +35,7 @@ Solange `task-app-dfm-core` noch nicht in GitHub Packages veröffentlicht ist, m
 .\mvnw.cmd clean install
 ```
 
-Der aktuelle Entwicklungsstand verwendet `task-app-dfm-core:1.6.0-SNAPSHOT`. Diese Version muss lokal installiert oder im Maven-Repository verfügbar sein; das lokale Installieren allein stellt sie dem isolierten Docker-Build nicht zur Verfügung.
+Der aktuelle Entwicklungsstand verwendet `task-app-dfm-core:1.7.0`. Diese Version muss lokal installiert oder im Maven-Repository verfügbar sein; das lokale Installieren allein stellt sie dem isolierten Docker-Build nicht zur Verfügung.
 
 Danach das Backend starten:
 
