@@ -49,6 +49,58 @@ const SELF_LOOP_HALF_GAP = 6
 const MAX_LOOP_CLEARANCE = 70 * Math.PI / 180
 const LEVEL_RADIUS = 10
 
+function crossArcPath(angles: number[]) {
+  const radius = LEVEL_RADIUS + SHARED_RING_GAP
+  const fullTurn = 2 * Math.PI
+  const sorted = angles.map((angle) => (angle + fullTurn) % fullTurn).sort((a, b) => a - b)
+  let start = -Math.PI
+  let span = Math.PI
+  if (sorted.length > 0) {
+    let largestGap = -1
+    let first = 0
+    sorted.forEach((angle, index) => {
+      const next = index + 1 < sorted.length ? sorted[index + 1] : sorted[0] + fullTurn
+      if (next - angle > largestGap) {
+        largestGap = next - angle
+        first = (index + 1) % sorted.length
+      }
+    })
+    const covered = fullTurn - largestGap
+    span = Math.min(fullTurn, Math.max(Math.PI, covered + Math.PI / 12))
+    start = sorted[first] - (span - covered) / 2
+  }
+  const point = (angle: number) => `${radius * Math.cos(angle)} ${radius * Math.sin(angle)}`
+  return `M ${point(start)} A ${radius} ${radius} 0 0 1 ${point(start + span / 2)}`
+    + ` A ${radius} ${radius} 0 0 1 ${point(start + span)}`
+}
+
+// Find the last intersection of a rendered edge segment with the circle around its target.
+function incomingArcAngle(segment: SVGGeometryElement, target: SimNode): number | undefined {
+  const radius = LEVEL_RADIUS + SHARED_RING_GAP
+  const length = segment.getTotalLength()
+  const x = target.x ?? 0, y = target.y ?? 0
+  const distance = (position: number) => {
+    const point = segment.getPointAtLength(position)
+    return Math.hypot(point.x - x, point.y - y)
+  }
+  let inside = length
+  if (distance(inside) > radius) return undefined
+  for (let i = 1; i <= 64; i += 1) {
+    let outside = length * (1 - i / 64)
+    if (distance(outside) >= radius) {
+      for (let j = 0; j < 24; j += 1) {
+        const middle = (outside + inside) / 2
+        if (distance(middle) >= radius) outside = middle
+        else inside = middle
+      }
+      const point = segment.getPointAtLength((outside + inside) / 2)
+      return Math.atan2(point.y - y, point.x - x)
+    }
+    inside = outside
+  }
+  return undefined
+}
+
 type LinkEnd = string | { id: string }
 
 function endId(end: LinkEnd) {
@@ -94,8 +146,9 @@ function selfLoopShape(node: SimNode, links: SimLink[], label?: string | null, o
   const perpendicularX = -directionY
   const perpendicularY = directionX
 
-  const startAlong = Math.sqrt(LEVEL_RADIUS * LEVEL_RADIUS - SELF_LOOP_HALF_GAP * SELF_LOOP_HALF_GAP)
-  const controlAlong = LEVEL_RADIUS + SELF_LOOP_HEIGHT + offset
+  const radius = node.type === 'SHARED' ? LEVEL_RADIUS + SHARED_RING_GAP : LEVEL_RADIUS
+  const startAlong = Math.sqrt(radius * radius - SELF_LOOP_HALF_GAP * SELF_LOOP_HALF_GAP)
+  const controlAlong = radius + SELF_LOOP_HEIGHT + offset
   const point = (across: number, along: number) => ({
     x: x + perpendicularX * across + directionX * along,
     y: y + perpendicularY * across + directionY * along,
@@ -113,7 +166,7 @@ function selfLoopShape(node: SimNode, links: SimLink[], label?: string | null, o
   const outermostOffset = Math.max(0, ...links.filter((link) => isSelfLink(link) && endId(link.source) === node.id)
     .map((link) => link.parallelOffset ?? 0))
   if (offset < outermostOffset) {
-    const outerControl = LEVEL_RADIUS + SELF_LOOP_HEIGHT + outermostOffset + 4
+    const outerControl = radius + SELF_LOOP_HEIGHT + outermostOffset + 4
     const outerLeft = Math.min(start.x, end.x, point(-SELF_LOOP_HALF_WIDTH, outerControl).x,
       point(SELF_LOOP_HALF_WIDTH, outerControl).x)
     labelCenter = { x: outerLeft - halfWidth - 9, y: point(0, tip).y }
@@ -287,9 +340,10 @@ interface Box {
 function nodeBox(node: SimNode, padding = 0): Box {
   const x = node.x ?? 0
   const y = node.y ?? 0
-  let halfWidth = Math.max(LEVEL_RADIUS, node.label.length * 3.3 + 3)
-  let top = -LEVEL_RADIUS
-  let bottom = 26
+  const radius = node.type === 'CROSS' ? LEVEL_RADIUS + SHARED_RING_GAP : LEVEL_RADIUS
+  let halfWidth = Math.max(radius, node.label.length * 3.3 + 3)
+  let top = -radius
+  let bottom = node.type === 'CROSS' ? 36 : 26
   if (node.type === 'FACT') {
     halfWidth = Math.max(60, labelWidth(node) / 2)
     top = -factHalfHeight(node)
@@ -351,10 +405,8 @@ function edgeCrossesBox(source: SimNode, target: SimNode, offset: number | undef
   return false
 }
 
-// Center of the label of an edge. The label belongs to the visible part of the edge (between the node borders);
-// only optional and convergence edges keep their middle free for the marker or arrow, so the label is shifted
-// there towards the lower node because node names hang below the nodes. The layout may move a label along its edge
-// by `shift` to get it clear of other edges; it always stays within the visible part.
+// Center of the label of an edge. Optional edges keep their middle free for the marker;
+// convergence edges reserve space at the target for the arrow.
 function edgeLabelCenter(
   link: { label?: string | null; optional: boolean; connectionType: string; parallelOffset?: number },
   source: SimNode,
@@ -375,7 +427,7 @@ function edgeLabelCenter(
     return { x: x + perpendicularX * offset, y: y + perpendicularY * offset }
   }
   const startClip = borderDistance(source, unitX, unitY)
-  const endClip = borderDistance(target, -unitX, -unitY)
+  const endClip = borderDistance(target, -unitX, -unitY) + (link.connectionType === 'CONVERGENCE' ? 12 : 0)
   const visibleLength = length - startClip - endClip
   const visibleMiddleX = sourceX + deltaX / 2 + unitX * (startClip - endClip) / 2
   const visibleMiddleY = sourceY + deltaY / 2 + unitY * (startClip - endClip) / 2
@@ -384,7 +436,7 @@ function edgeLabelCenter(
   const directionX = deltaY < 0 ? -unitX : unitX
   const directionY = Math.abs(unitY)
   const extent = Math.abs(directionX) * labelHalfWidth + Math.abs(directionY) * labelHalfHeight
-  const reserveMiddle = link.optional || link.connectionType === 'CONVERGENCE'
+  const reserveMiddle = link.optional
   if (reserveMiddle ? 9 + 2 * extent + 2 > visibleLength / 2 : 2 * extent + 2 > visibleLength) {
     // the edge is too short, so the label is placed beside the edge instead
     const side = perpendicularY > 0 ? -1 : 1
@@ -945,7 +997,7 @@ function renderGraph(graph: DfmGraph | null) {
     .append('marker')
     .attr('id', 'convergence-arrow')
     .attr('viewBox', '0 0 10 10')
-    .attr('refX', 8)
+    .attr('refX', 10)
     .attr('refY', 5)
     .attr('markerWidth', 7)
     .attr('markerHeight', 7)
@@ -986,7 +1038,7 @@ function renderGraph(graph: DfmGraph | null) {
         .data(Array.from({ length: segmentCount }, (_, index) => index))
         .join('path')
         .attr('class', 'edge parallel-edge')
-        .attr('marker-end', (index) => link.connectionType === 'CONVERGENCE' && index === 0
+        .attr('marker-end', (index) => link.connectionType === 'CONVERGENCE' && index === 1
           ? 'url(#convergence-arrow)' : null)
       group.selectAll<SVGLineElement, number>('line.optional-edge-marker')
         .data(link.optional ? [0] : [])
@@ -1001,7 +1053,7 @@ function renderGraph(graph: DfmGraph | null) {
         .data(Array.from({ length: segmentCount }, (_, index) => index))
         .join('line')
         .attr('class', 'edge')
-        .attr('marker-end', (index) => link.connectionType === 'CONVERGENCE' && index === 0
+        .attr('marker-end', (index) => link.connectionType === 'CONVERGENCE' && index === 1
           ? 'url(#convergence-arrow)'
           : null)
 
@@ -1078,15 +1130,13 @@ function renderGraph(graph: DfmGraph | null) {
       }
       group.append('circle').attr('r', 10)
       if (node.type === 'CROSS') {
-        const arcRadius = 10 + SHARED_RING_GAP
         group.append('path')
           .attr('class', 'cross-arc')
-          .attr('d', `M ${-arcRadius} -4 A ${arcRadius} ${arcRadius} 0 0 1 -4 ${-arcRadius}`)
       }
       group.append('text')
         .attr('class', 'node-label')
         .attr('text-anchor', 'middle')
-        .attr('y', 20)
+        .attr('y', node.type === 'CROSS' ? 30 : 20)
         .text(node.label)
       if (node.optional) {
         group.append('line')
@@ -1140,6 +1190,7 @@ function renderGraph(graph: DfmGraph | null) {
       const perpendicularY = deltaX / length
       const middleX = (sourceX + targetX) / 2
       const middleY = (sourceY + targetY) / 2
+      const targetClip = borderDistance(target, -deltaX / length, -deltaY / length)
 
       if (link.parallelOffset !== undefined) {
         select(this).selectAll<SVGPathElement, number>('path.edge').attr('d', (index) => {
@@ -1147,11 +1198,34 @@ function renderGraph(graph: DfmGraph | null) {
           const cx = middleX + perpendicularX * offset * 2
           const cy = middleY + perpendicularY * offset * 2
           if (link.connectionType !== 'CONVERGENCE') return `M ${sourceX} ${sourceY} Q ${cx} ${cy} ${targetX} ${targetY}`
-          const mx = (sourceX + 2 * cx + targetX) / 4
-          const my = (sourceY + 2 * cy + targetY) / 4
+
+          const point = (t: number) => ({
+            x: (1 - t) ** 2 * sourceX + 2 * (1 - t) * t * cx + t ** 2 * targetX,
+            y: (1 - t) ** 2 * sourceY + 2 * (1 - t) * t * cy + t ** 2 * targetY,
+          })
+          // Find the target border and split the truncated quadratic without changing its shape.
+          let outside = 0
+          let inside = 1
+          for (let i = 0; i < 30; i += 1) {
+            const t = (outside + inside) / 2
+            const p = point(t)
+            const dx = p.x - targetX
+            const dy = p.y - targetY
+            const distance = Math.hypot(dx, dy)
+            if (distance > 0 && distance > borderDistance(target, dx / distance, dy / distance)) outside = t
+            else inside = t
+          }
+          const end = point(outside)
+          const split = outside / 2
+          const mid = point(split)
+          const firstControl = { x: sourceX + (cx - sourceX) * split, y: sourceY + (cy - sourceY) * split }
+          const secondControl = {
+            x: mid.x + split * ((1 - split) * (cx - sourceX) + split * (targetX - cx)),
+            y: mid.y + split * ((1 - split) * (cy - sourceY) + split * (targetY - cy)),
+          }
           return index === 0
-            ? `M ${sourceX} ${sourceY} Q ${(sourceX + cx) / 2} ${(sourceY + cy) / 2} ${mx} ${my}`
-            : `M ${mx} ${my} Q ${(targetX + cx) / 2} ${(targetY + cy) / 2} ${targetX} ${targetY}`
+            ? `M ${sourceX} ${sourceY} Q ${firstControl.x} ${firstControl.y} ${mid.x} ${mid.y}`
+            : `M ${mid.x} ${mid.y} Q ${secondControl.x} ${secondControl.y} ${end.x} ${end.y}`
         })
       }
 
@@ -1172,13 +1246,19 @@ function renderGraph(graph: DfmGraph | null) {
           if (link.connectionType === 'MULTIPLE') {
             return targetX + perpendicularX * (index === 0 ? 2.5 : -2.5)
           }
-          return link.connectionType === 'CONVERGENCE' && index === 0 ? middleX : targetX
+          if (link.connectionType === 'CONVERGENCE') {
+            return index === 0 ? middleX : targetX - deltaX / length * targetClip
+          }
+          return targetX
         })
         .attr('y2', (index) => {
           if (link.connectionType === 'MULTIPLE') {
             return targetY + perpendicularY * (index === 0 ? 2.5 : -2.5)
           }
-          return link.connectionType === 'CONVERGENCE' && index === 0 ? middleY : targetY
+          if (link.connectionType === 'CONVERGENCE') {
+            return index === 0 ? middleY : targetY - deltaY / length * targetClip
+          }
+          return targetY
         })
 
       select(this).select<SVGLineElement>('line.optional-edge-marker')
@@ -1194,6 +1274,27 @@ function renderGraph(graph: DfmGraph | null) {
     })
 
     nodeSelection.attr('transform', (node) => `translate(${node.x ?? 0},${node.y ?? 0})`)
+    const incomingAngles = new Map<string, number[]>()
+    edgeSelection.each(function (link) {
+      const target = link.target as SimNode
+      if (target.type !== 'CROSS') return
+      const segments = Array.from(this.querySelectorAll<SVGGeometryElement>('.edge'))
+      const lines = link.connectionType === 'MULTIPLE' ? segments.map((segment) => [segment]) : [segments]
+      for (const line of lines) {
+        let angle: number | undefined
+        for (const segment of line.reverse()) {
+          angle = incomingArcAngle(segment, target)
+          if (angle !== undefined) break
+        }
+        if (angle === undefined) {
+          console.warn(`Could not find the incoming edge at cross attribute ${target.id}`)
+          continue
+        }
+        incomingAngles.set(target.id, [...(incomingAngles.get(target.id) ?? []), angle])
+      }
+    })
+    nodeSelection.select<SVGPathElement>('path.cross-arc')
+      .attr('d', (node) => crossArcPath(incomingAngles.get(node.id) ?? []))
   }
 
   updatePositions()

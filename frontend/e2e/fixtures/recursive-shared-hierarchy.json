@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    { "id": "fact-0", "label": "Sales", "type": "FACT", "optional": false, "details": ["profit"] },
+    { "id": "hierarchy-employee-level-employee", "label": "employee", "type": "SHARED", "optional": false, "details": [] },
+    { "id": "hierarchy-employee-level-region", "label": "region", "type": "LEVEL", "optional": false, "details": [] }
+  ],
+  "edges": [
+    { "source": "fact-0", "target": "hierarchy-employee-level-employee", "connectionType": "SIMPLE", "optional": false, "label": null },
+    { "source": "hierarchy-employee-level-employee", "target": "hierarchy-employee-level-employee", "connectionType": "CONVERGENCE", "optional": false, "label": "supervisor" },
+    { "source": "hierarchy-employee-level-employee", "target": "hierarchy-employee-level-region", "connectionType": "SIMPLE", "optional": false, "label": null }
+  ]
+}

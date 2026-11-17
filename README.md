@@ -16,7 +16,9 @@ Fakt-Dimension-Verbindungen können optional oder mehrfach sein, z. B. `Sales (-
 
 Rekursive Hierarchien unterstützen optionale Verbindungen, beispielsweise `worker (-[supervisor]-) worker;`. Mehrfache rekursive Verbindungen (`=`) sind nicht zulässig; zwischen verschiedenen Levels bleiben mehrfache Verbindungen möglich.
 
-Geteilte Hierarchien und Cross-Dimensional Attributes werden einmal mit `hierarchy Name { Kette; ... };` deklariert und mit `{shared} Name` bzw. `{cross} Name` am Ende einer Kette referenziert, z. B. `customer -[customerCity]- {shared} city;` oder `country - {cross} VAT;` (Core-Parser ab Version 1.5.0). Die Deklaration ist verpflichtend. Der Einstiegsknoten der Hierarchie wird als Doppelkreis (`{shared}`) bzw. als Kreis mit Bogen (`{cross}`) dargestellt; Syntax-Highlighting und Formatierung kennen die Marker.
+Geteilte Hierarchien und Cross-Dimensional Attributes werden einmal mit `hierarchy Name { Kette; ... };` deklariert und mit `{shared} Name` bzw. `{cross} Name` am Ende einer Kette referenziert, z. B. `customer -[customerCity]- {shared} city;` oder `country - {cross} VAT;` (Core-Parser ab Version 1.5.0). Die Deklaration ist verpflichtend. Der Einstiegsknoten der Hierarchie wird als Doppelkreis (`{shared}`) bzw. als Kreis mit Bogen (`{cross}`) dargestellt; Syntax-Highlighting und Formatierung kennen die Marker. Eine geteilte Hierarchie kann auch eine explizit angegebene rekursive Verbindung enthalten.
+
+Der äußere Bogen eines Cross-Dimensional Attributes berührt alle eingehenden Kanten, die bis zum inneren Kreis weiterlaufen. Falls ein Halbkreis dafür nicht ausreicht, wird der Bogen verlängert.
 
 ## Voraussetzungen
 

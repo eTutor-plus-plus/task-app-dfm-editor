@@ -113,6 +113,173 @@ async function expectGraphMatches(graph: Locator, expected: DfmGraph) {
   }
 }
 
+test('places convergence arrows at the target border for straight, parallel, and recursive edges', async ({ page }) => {
+  const scenario = scenarios.find((item) => item.name === 'convergence-two-targets')!
+  const model = structuredClone(scenario.graph)
+  const convergence = model.edges.find((edge) => edge.connectionType === 'CONVERGENCE')!
+  model.nodes.find((node) => node.id === convergence.target)!.type = 'SHARED'
+  model.edges.push({ ...convergence, optional: true, label: 'alternative' })
+  const recursiveTarget = model.nodes.find((node) => node.label === 'fiscalYear')!
+  model.edges.push({ ...convergence, source: recursiveTarget.id, target: recursiveTarget.id, label: 'parent' })
+  await mockParseApi(page, model)
+  const graph = await renderModel(page, scenario.dfm)
+  await expectGraphMatches(graph, model)
+
+  const arrows = await graph.evaluate((svg, expected) => {
+    const groups = Array.from(svg.querySelectorAll<SVGGElement>('.edge-group'))
+    const nodes = Array.from(svg.querySelectorAll<SVGGElement>('.graph-node'))
+    return expected.edges.flatMap((edge, index) => {
+      if (edge.connectionType !== 'CONVERGENCE') return []
+      const target = nodes[expected.nodes.findIndex((node) => node.id === edge.target)]
+      const matrix = target.transform.baseVal.consolidate()!.matrix
+      const circle = target.querySelector<SVGCircleElement>('.shared-ring, circle')!
+      const radius = circle.r.baseVal.value
+      const group = groups[index]
+      const segments = Array.from(group.querySelectorAll<SVGGeometryElement>('.edge'))
+      const arrow = group.querySelector<SVGGeometryElement>('.edge[marker-end]')
+      if (!arrow) return [{ error: Infinity, arrowOnLastSegment: false, curved: false, optional: edge.optional, loop: false }]
+      const point = arrow instanceof SVGPathElement
+        ? arrow.getPointAtLength(arrow.getTotalLength())
+        : new DOMPoint(Number(arrow.getAttribute('x2')), Number(arrow.getAttribute('y2')))
+      return [{
+        error: Math.abs(Math.hypot(point.x - matrix.e, point.y - matrix.f) - radius),
+        arrowOnLastSegment: arrow === segments[segments.length - 1],
+        curved: arrow instanceof SVGPathElement,
+        optional: edge.optional,
+        loop: edge.source === edge.target,
+      }]
+    })
+  }, model)
+
+  expect(arrows.some((arrow) => arrow.curved && arrow.optional)).toBe(true)
+  expect(arrows.some((arrow) => !arrow.curved)).toBe(true)
+  expect(arrows.some((arrow) => arrow.loop)).toBe(true)
+  for (const arrow of arrows) {
+    expect(arrow.arrowOnLastSegment).toBe(true)
+    expect(arrow.error).toBeLessThan(0.01)
+  }
+  await expect(graph.locator('#convergence-arrow')).toHaveAttribute('refX', '10')
+})
+
+test('places a recursive shared hierarchy arrow at the outer ring', async ({ page }) => {
+  const scenario = scenarios.find((item) => item.name === 'recursive-shared-hierarchy')!
+  await mockParseApi(page, scenario.graph)
+  const graph = await renderModel(page, scenario.dfm)
+  await expectGraphMatches(graph, scenario.graph)
+
+  const loop = graph.locator('.loop-edge')
+  await expect(loop).toHaveAttribute('marker-end', 'url(#convergence-arrow)')
+  const distances = await loop.evaluate((path: SVGPathElement) => {
+    const node = path.closest('.graph-content')!.querySelector<SVGGElement>('.graph-node.shared')!
+    const matrix = node.transform.baseVal.consolidate()!.matrix
+    const radius = node.querySelector<SVGCircleElement>('.shared-ring')!.r.baseVal.value
+    return [path.getPointAtLength(0), path.getPointAtLength(path.getTotalLength())]
+      .map((point) => Math.abs(Math.hypot(point.x - matrix.e, point.y - matrix.f) - radius))
+  })
+  expect(distances[0]).toBeLessThan(0.01)
+  expect(distances[1]).toBeLessThan(0.01)
+})
+
+test('centers a semicircular cross arc on a single incoming edge', async ({ page }) => {
+  const model: DfmGraph = {
+    nodes: [
+      { id: 'a', label: 'Sales', type: 'FACT', optional: false, details: [] },
+      { id: 'x', label: 'VAT', type: 'CROSS', optional: false, details: [] },
+      { id: 'z', label: 'Rate', type: 'LEVEL', optional: false, details: [] },
+    ],
+    edges: [
+      { source: 'a', target: 'x', connectionType: 'SIMPLE', optional: false },
+      { source: 'x', target: 'z', connectionType: 'SIMPLE', optional: false },
+    ],
+  }
+  await mockParseApi(page, model)
+  const graph = await renderModel(page, 'fact Sales;')
+  await expectGraphMatches(graph, model)
+
+  const result = await graph.evaluate((svg) => {
+    const node = svg.querySelector<SVGGElement>('.graph-node.cross')!
+    const matrix = node.transform.baseVal.consolidate()!.matrix
+    const arc = node.querySelector<SVGPathElement>('.cross-arc')!
+    const length = arc.getTotalLength()
+    const middle = arc.getPointAtLength(length / 2)
+    const line = svg.querySelector<SVGLineElement>('.edge-group line.edge')!
+    const source = line.getPointAtLength(0)
+    const dx = source.x - matrix.e, dy = source.y - matrix.f
+    return {
+      length,
+      alignment: (middle.x * dx + middle.y * dy) / (Math.hypot(middle.x, middle.y) * Math.hypot(dx, dy)),
+      labelTop: node.querySelector<SVGTextElement>('.node-label')!.getBBox().y,
+    }
+  })
+
+  expect(result.length).toBeCloseTo(14 * Math.PI, 1)
+  expect(result.alignment).toBeGreaterThan(0.999)
+  expect(result.labelTop).toBeGreaterThan(14)
+})
+
+test('aligns the cross arc with every incoming edge and extends it when needed', async ({ page }) => {
+  const model: DfmGraph = {
+    nodes: [
+      { id: 'a', label: 'Sales', type: 'FACT', optional: false, details: [] },
+      { id: 'b', label: 'Budget', type: 'FACT', optional: false, details: [] },
+      { id: 'x', label: 'VAT', type: 'CROSS', optional: false, details: [] },
+      { id: 'z', label: 'Rate', type: 'LEVEL', optional: false, details: [] },
+    ],
+    edges: [
+      { source: 'a', target: 'x', connectionType: 'CONVERGENCE', optional: false },
+      { source: 'a', target: 'x', connectionType: 'SIMPLE', optional: true },
+      { source: 'b', target: 'x', connectionType: 'MULTIPLE', optional: false },
+      { source: 'x', target: 'x', connectionType: 'CONVERGENCE', optional: false, label: 'parent' },
+      { source: 'x', target: 'z', connectionType: 'SIMPLE', optional: false },
+    ],
+  }
+  await mockParseApi(page, model)
+  const graph = await renderModel(page, 'fact Sales;')
+  await expectGraphMatches(graph, model)
+
+  const result = await graph.evaluate((svg, expected) => {
+    const node = svg.querySelector<SVGGElement>('.graph-node.cross')!
+    const matrix = node.transform.baseVal.consolidate()!.matrix
+    const arc = node.querySelector<SVGPathElement>('.cross-arc')!
+    const arcLength = arc.getTotalLength()
+    const groups = Array.from(svg.querySelectorAll<SVGGElement>('.edge-group'))
+    const results = expected.edges.flatMap((edge, index) => {
+      if (edge.target !== 'x') return []
+      const segments = Array.from(groups[index].querySelectorAll<SVGGeometryElement>('.edge'))
+      const lines = edge.connectionType === 'MULTIPLE' ? segments.map((segment) => [segment]) : [segments]
+      return lines.map((line) => {
+        const last = line[line.length - 1]
+        const end = last.getPointAtLength(last.getTotalLength())
+        const endDistance = Math.hypot(end.x - matrix.e, end.y - matrix.f)
+        for (const segment of [...line].reverse()) {
+          const length = segment.getTotalLength()
+          for (let position = length; position >= 0; position -= 0.2) {
+            const point = segment.getPointAtLength(position)
+            const distance = Math.hypot(point.x - matrix.e, point.y - matrix.f)
+            if (Math.abs(distance - 14) > 0.11) continue
+            let nearest = Infinity
+            for (let i = 0; i <= 2000; i += 1) {
+              const arcPoint = arc.getPointAtLength(arcLength * i / 2000)
+              nearest = Math.min(nearest, Math.hypot(point.x - matrix.e - arcPoint.x, point.y - matrix.f - arcPoint.y))
+            }
+            return { endDistance, arcDistance: nearest }
+          }
+        }
+        return { endDistance, arcDistance: Infinity }
+      })
+    })
+    return { arcLength, results }
+  }, model)
+
+  expect(result.results).toHaveLength(5)
+  expect(result.arcLength).toBeGreaterThan(14 * Math.PI + 1)
+  expect(result.arcLength).toBeLessThanOrEqual(14 * Math.PI * 2 + 0.1)
+  for (const edge of result.results) {
+    expect(edge.endDistance).toBeLessThanOrEqual(10.01)
+    expect(edge.arcDistance).toBeLessThan(0.15)
+  }
+})
+
 test('exports a PNG using a localized download icon', async ({ page }) => {
   const purchase = scenarios.find((scenario) => scenario.name === 'purchase')!
   await mockParseApi(page, purchase.graph)
