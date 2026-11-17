@@ -18,17 +18,13 @@ const scenarios = readdirSync(fixtureDirectory)
 const minimumReadableScale = 0.4
 // The canvas has a fixed size, so very large models are fitted smaller and are meant to be read by zooming in.
 const minimumScaleByScenario: Record<string, number> = { 'large-model': 0.25 }
-// Longest edge in the current fixtures is about 350 units (wide fans, labelled fact connections); this guards
+// Longest edge in most fixtures is about 310 units (wide fans, labelled fact connections); this guards
 // against the layout getting looser.
 const maximumEdgeLength = 360
-// A cross-dimensional attribute joins branches that lie on opposite sides of the fact, so its edge is longer.
-const maximumEdgeLengthByScenario: Record<string, number> = { 'shared-and-cross-hierarchies': 500, 'parallel-connections': 550 }
+// professorEmployeeNo has ten children; the edges to the outermost of them span half of that wide fan.
+const maximumEdgeLengthByScenario: Record<string, number> = { 'modell-7-thesis': 400 }
 // Known layout problems: the test is expected to fail and starts failing once the problem is fixed.
-const knownLayoutProblems: Record<string, string> = {
-  'modell-2-realization': 'The shared school hierarchy produces an excessively long edge.',
-  'modell-4-evaluation-alt': 'A cross-dimensional edge crosses the semester hierarchy.',
-  'modell-7-thesis': 'Parallel month edges cross adjacent edges and labels.',
-}
+const knownLayoutProblems: Record<string, string> = {}
 const backendUrl = process.env.E2E_BACKEND_URL ?? 'http://localhost:8082'
 
 async function renderModel(page: Page, dfm: string) {

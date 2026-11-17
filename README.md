@@ -67,8 +67,6 @@ npm run test:e2e
 
 Die Tests prüfen für jedes Szenario Graph-Inhalt, Überlappungen von Knoten, Kanten durch fremde Knoten, sich kreuzende Kanten, verdeckte oder sich überlappende Kantenbeschriftungen, Schleifen rekursiver Hierarchien über anderen Knoten, abgeschnittene Knoten und eine lesbare Mindestskalierung. Zusätzlich werden 60 zufällig erzeugte Modelle mit festen Startwerten auf dieselben Layout-Kriterien geprüft (`frontend/e2e/random-layout.spec.ts`).
 
-Bei `modell-2-realization`, `modell-4-evaluation-alt` und `modell-7-thesis` sind Layoutprobleme bekannt. Ihre Graphinhalte werden regulär geprüft; separate Layouttests sind bis zur Behebung als erwartete Fehlschläge markiert.
-
 Weitere Zufallsmodelle lassen sich über einen Bereich von Startwerten prüfen; mit `E2E_LAYOUT_REPORT=1` werden die Befunde je Modell ausgegeben, statt den Test fehlschlagen zu lassen:
 
 ```powershell

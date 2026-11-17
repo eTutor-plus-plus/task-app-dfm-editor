@@ -405,6 +405,49 @@ function edgeCrossesBox(source: SimNode, target: SimNode, offset: number | undef
   return false
 }
 
+interface Point {
+  x: number
+  y: number
+}
+
+// the line of an edge as points; parallel edges are curved
+function edgePoints(source: SimNode, target: SimNode, offset: number | undefined): Point[] {
+  const sx = source.x ?? 0, sy = source.y ?? 0, tx = target.x ?? 0, ty = target.y ?? 0
+  if (!offset) return [{ x: sx, y: sy }, { x: tx, y: ty }]
+  const length = Math.hypot(tx - sx, ty - sy) || 1
+  const px = -(ty - sy) / length, py = (tx - sx) / length
+  return Array.from({ length: 25 }, (_, index) => {
+    const t = index / 24
+    const bend = 4 * t * (1 - t) * offset
+    return { x: sx + (tx - sx) * t + px * bend, y: sy + (ty - sy) * t + py * bend }
+  })
+}
+
+// Whether two edges cross where it can be seen; nodes are drawn above the edges that end at them.
+function edgesCross(first: Point[], second: Point[], ends: SimNode[]) {
+  for (let i = 1; i < first.length; i += 1) {
+    const ax = first[i - 1].x, ay = first[i - 1].y
+    const rx = first[i].x - ax, ry = first[i].y - ay
+    for (let j = 1; j < second.length; j += 1) {
+      const bx = second[j - 1].x, by = second[j - 1].y
+      const sx = second[j].x - bx, sy = second[j].y - by
+      const denominator = rx * sy - ry * sx
+      if (Math.abs(denominator) < 1e-9) continue
+      const t = ((bx - ax) * sy - (by - ay) * sx) / denominator
+      const u = ((bx - ax) * ry - (by - ay) * rx) / denominator
+      if (t < 0 || t > 1 || u < 0 || u > 1) continue
+      const x = ax + t * rx, y = ay + t * ry
+      const hidden = ends.some((node) => {
+        const deltaX = x - (node.x ?? 0), deltaY = y - (node.y ?? 0)
+        const distance = Math.hypot(deltaX, deltaY)
+        return distance < 1e-6 || distance <= borderDistance(node, deltaX / distance, deltaY / distance) + 2
+      })
+      if (!hidden) return true
+    }
+  }
+  return false
+}
+
 // Center of the label of an edge. Optional edges keep their middle free for the marker;
 // convergence edges reserve space at the target for the arrow.
 function edgeLabelCenter(
@@ -439,14 +482,16 @@ function edgeLabelCenter(
   const reserveMiddle = link.optional
   if (reserveMiddle ? 9 + 2 * extent + 2 > visibleLength / 2 : 2 * extent + 2 > visibleLength) {
     // the edge is too short, so the label is placed beside the edge instead
-    const side = perpendicularY > 0 ? -1 : 1
+    const side = Math.abs(perpendicularY) > 1e-6 ? (perpendicularY > 0 ? -1 : 1) : unitY > 0 ? 1 : -1
     const offset = 9 + Math.abs(perpendicularX) * labelHalfWidth + Math.abs(perpendicularY) * labelHalfHeight
     return withCurve(visibleMiddleX + perpendicularX * side * offset, visibleMiddleY + perpendicularY * side * offset,
       (startClip + length - endClip) / (2 * length))
   }
   // position along the edge, measured from the center of the source
   const middle = (startClip + length - endClip) / 2
-  const towardsLower = deltaY < 0 ? -1 : 1
+  // The label of an optional edge lies towards the lower end, on a level edge towards the right end. The choice
+  // must not depend on the direction of the edge or on rounding.
+  const towardsLower = deltaY < -1e-6 || (Math.abs(deltaY) <= 1e-6 && deltaX < 0) ? -1 : 1
   let along = (reserveMiddle ? middle + towardsLower * (extent + 9) : middle) + shift
   along = Math.min(length - endClip - extent - 1, Math.max(startClip + extent + 1, along))
   if (reserveMiddle && towardsLower * (along - middle) < extent + 9) along = middle + towardsLower * (extent + 9)
@@ -459,6 +504,9 @@ const MAX_GAP = 420
 const NODE_SPACING = 16
 // widest fan of children in front of a node; keeps the edges of a fan from running along their neighbours
 const MAX_FAN = 150 * Math.PI / 180
+// length of a lens of parallel edges relative to the bulge of its outermost line
+const PARALLEL_LENGTH_RATIO = 3
+const MIN_LENS_SPACING = 36
 
 // Places every tree around its root (a fact, or the head of a dimension without a fact).
 //
@@ -471,8 +519,31 @@ const MAX_FAN = 150 * Math.PI / 180
 // Returns how far labels were moved along their edges to get clear of other edges.
 function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
   const byId = new Map(nodes.map((node) => [node.id, node]))
+  // A fact with a single dimension would have the whole dimension on one side. The head of that dimension is
+  // the center of the picture instead and the fact is placed like one of its levels; for the layout the
+  // connections of the fact are turned around.
+  const turned = new Map<DfmEdge, DfmEdge>()
+  const centers = new Set<string>()
+  const plainEdges = allEdges.filter((edge) => !isSelfLink(edge) && byId.has(edge.source) && byId.has(edge.target))
+  for (const fact of nodes.filter((node) => node.type === 'FACT')) {
+    const connections = plainEdges.filter((edge) => edge.source === fact.id || edge.target === fact.id)
+    const heads = new Set(connections.map((edge) => edge.target))
+    const head = heads.size === 1 ? byId.get([...heads][0])! : undefined
+    if (!head || head.type === 'FACT' || connections.some((edge) => edge.source !== fact.id)
+      || plainEdges.some((edge) => edge.target === head.id && edge.source !== fact.id)
+      || !plainEdges.some((edge) => edge.source === head.id)) continue
+    centers.add(head.id)
+    for (const edge of connections) {
+      turned.set(edge, {
+        ...edge,
+        source: edge.target,
+        target: edge.source,
+        parallelOffset: edge.parallelOffset === undefined ? undefined : -edge.parallelOffset,
+      })
+    }
+  }
   // self-loops (recursive hierarchies) are not part of the tree structure
-  const edges = allEdges.filter((edge) => !isSelfLink(edge) && byId.has(edge.source) && byId.has(edge.target))
+  const edges = plainEdges.map((edge) => turned.get(edge) ?? edge)
   const outgoing = new Map<string, DfmEdge[]>()
   const incoming = new Map<string, DfmEdge[]>()
   edges.forEach((edge) => {
@@ -491,6 +562,36 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
   // labels that the layout moved along their edge, see edgeLabelCenter
   const labelShifts = new Map<DfmEdge, number>()
   const shiftOf = (edge: DfmEdge) => labelShifts.get(edge) ?? 0
+  // parallel edges between the same two nodes are drawn as a lens; how far its outermost line bulges
+  const bulgeOf = (edge: DfmEdge) => edge.parallelOffset === undefined ? 0 : Math.max(0, ...edges
+    .filter((other) => other.source === edge.source && other.target === edge.target)
+    .map((other) => Math.abs(other.parallelOffset ?? 0)))
+  // The lines of a lens lie as far apart as their labels need: side by side the labels need their width,
+  // above each other only their height. Returns whether a lens changed.
+  const spreadLenses = (lensEdges: DfmEdge[]) => {
+    let moved = false
+    const done = new Set<DfmEdge>()
+    for (const edge of lensEdges) {
+      if (edge.parallelOffset === undefined || done.has(edge)) continue
+      const group = lensEdges.filter((other) => other.source === edge.source && other.target === edge.target)
+      group.forEach((other) => done.add(other))
+      const source = byId.get(edge.source)!
+      const target = byId.get(edge.target)!
+      const textWidth = Math.max(0, ...group.map((other) => (other.label?.length ?? 0) * 6.6))
+      const direction = source.x === undefined || target.x === undefined
+        ? Math.PI / 2
+        : Math.atan2((target.y ?? 0) - (source.y ?? 0), target.x - source.x)
+      const spacing = Math.max(MIN_LENS_SPACING,
+        textWidth * Math.abs(Math.sin(direction)) + 14 * Math.abs(Math.cos(direction)) + 16)
+      const side = [...turned.values()].includes(edge) ? -1 : 1
+      group.forEach((other, index) => {
+        const offset = side * (index - (group.length - 1) / 2) * spacing
+        if (Math.abs(offset - (other.parallelOffset ?? 0)) > 0.5) moved = true
+        other.parallelOffset = offset
+      })
+    }
+    return moved
+  }
 
   // longest path from a root; a node always lies further out than all of its parents
   const levelOf = new Map<string, number>(nodes.map((node) => [node.id, 0]))
@@ -550,6 +651,8 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
   // A node with several parents is placed between the branches of its parents: it becomes a child of their
   // lowest common ancestor in the order around the root, while its distance still follows its real parents.
   // The parents are turned towards it, so the additional edges stay short and do not cross their branches.
+  // neighbouring children that belong together because their branches meet in a common level
+  const joined = new Set<string>()
   const attachMerge = (merge: string) => {
     const parents = [...new Set((incoming.get(merge) ?? []).map((edge) => edge.source))]
       .filter((parent) => reached.has(parent))
@@ -577,9 +680,22 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
     // gap between the two halves.
     const continuesMiddle = !parents.includes(anchor) && branches.length % 2 === 1
     const split = continuesMiddle ? (branches.length - 1) / 2 : Math.ceil(branches.length / 2)
-    const middleParent = continuesMiddle
-      ? parents[paths.findIndex((path) => branchOf(path) === branches[split])]
-      : null
+    const parentIn = (branch: string) => parents[paths.findIndex((path) => branchOf(path) === branch)]
+    if (continuesMiddle) {
+      // The edges from the other branches pass the middle branch on both sides, so the branch that has the
+      // least beside the common level is the one in the middle.
+      const weight = (id: string): number => kidsOf(id).reduce((sum, kid) => sum + 1 + weight(kid), 0)
+      const middle = branches.reduce((best, branch) =>
+        weight(parentIn(branch)) < weight(parentIn(best)) ? branch : best, branches[split])
+      const others = branches.filter((branch) => branch !== middle)
+      branches.splice(0, branches.length, ...others.slice(0, split), middle, ...others.slice(split))
+    }
+    const middleParent = continuesMiddle ? parentIn(branches[split]) : null
+    const cluster = continuesMiddle ? branches : [...branches.slice(0, split), merge, ...branches.slice(split)]
+    cluster.slice(1).forEach((kid, index) => {
+      joined.add(`${cluster[index]}|${kid}`)
+      joined.add(`${kid}|${cluster[index]}`)
+    })
     if (continuesMiddle) {
       treeChildren.set(anchor, [...before, ...branches, ...after])
     } else {
@@ -595,11 +711,18 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
         moveToEdge(node, position < split)
       }
     })
-    if (middleParent) attach(middleParent, merge)
+    if (middleParent) {
+      // the common level lies in the middle of the other children of its branch
+      const siblings = kidsOf(middleParent)
+      const half = Math.ceil(siblings.length / 2)
+      treeParent.set(merge, middleParent)
+      treeChildren.set(middleParent, [...siblings.slice(0, half), merge, ...siblings.slice(half)])
+    }
     grow(merge)
   }
 
-  nodes.filter((node) => node.type === 'FACT').forEach((node) => {
+  const placedAsLevel = new Set([...turned.values()].map((edge) => edge.target))
+  nodes.filter((node) => node.type === 'FACT' && !placedAsLevel.has(node.id)).forEach((node) => {
     roots.push(node)
     grow(node.id)
   })
@@ -621,6 +744,12 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
     if (!rest) break
     roots.push(rest)
     grow(rest.id)
+  }
+
+  // a fact that is placed like a level comes first, see the direction of the first child of a root
+  for (const fact of placedAsLevel) {
+    const head = treeParent.get(fact)
+    if (head) treeChildren.set(head, [fact, ...kidsOf(head).filter((kid) => kid !== fact)])
   }
 
   const trees = roots.map((root) => {
@@ -652,11 +781,16 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
       return gap / (Math.min(...kids.map((kid) => radius.get(kid) ?? 0)) || 1)
     }
     // all edges leaving a node share one length, so its children form an arc; single edges may be longer
-    const gapOf = (source: string) => gaps.get(source) ?? (source === root.id ? ROOT_GAP : LEVEL_GAP)
-    const lengthOf = (edge: DfmEdge) => Math.max(gapOf(edge.source), minimumLengths.get(edge) ?? 0)
+    const gapOf = (source: string) => gaps.get(source)
+      ?? (source === root.id && !centers.has(source) ? ROOT_GAP : LEVEL_GAP)
+    // a lens of parallel edges must be long enough that its lines do not leave the node sideways
+    const lengthOf = (edge: DfmEdge) => Math.max(gapOf(edge.source), minimumLengths.get(edge) ?? 0,
+      PARALLEL_LENGTH_RATIO * bulgeOf(edge))
     const fanOf = (id: string) => kidsOf(id).reduce((sum, kid) => sum + (width.get(kid) ?? 0), 0) + loopWindowOf(id)
 
+    let lensMoved = false
     const place = () => {
+      lensMoved = spreadLenses(treeEdges)
       for (const node of byLevel) {
         if (node === root) {
           radius.set(node.id, 0)
@@ -665,13 +799,22 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
         // the root is a box, so its children start at its border in their direction
         const direction = angle.get(node.id) ?? Math.PI / 4
         let distance = 0
-        for (const edge of incoming.get(node.id) ?? []) {
-          if (!inTree.has(edge.source) || level(edge.source) >= level(node.id)) continue
+        const parentEdges = (incoming.get(node.id) ?? [])
+          .filter((edge) => inTree.has(edge.source) && level(edge.source) < level(node.id))
+        const nearest = Math.min(...parentEdges.map((edge) => radius.get(edge.source) ?? 0))
+        for (const edge of parentEdges) {
           const start = edge.source === root.id
             ? borderDistance(root, Math.cos(direction), Math.sin(direction))
             : radius.get(edge.source) ?? 0
-          distance = Math.max(distance, start + lengthOf(edge))
+          // A level with parents at different distances sits beside its outer parents instead of beyond them,
+          // which keeps the edge from its inner parents short.
+          const beside = edge.source === treeParent.get(node.id)
+            ? 0
+            : Math.min(LEVEL_GAP, (radius.get(edge.source) ?? 0) - nearest)
+          distance = Math.max(distance, start + lengthOf(edge) - beside)
         }
+        // a fact that is placed like a level is a box as well
+        if (node.type === 'FACT') distance += borderDistance(node, Math.cos(direction), Math.sin(direction))
         radius.set(node.id, distance || (radius.get(treeParent.get(node.id) ?? '') ?? 0) + LEVEL_GAP)
       }
 
@@ -709,6 +852,17 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
             }
             own = Math.max(own, 2 * Math.atan((labelExtent + 10 + room) / 2 / (distance || 1)))
           }
+          // the lines of a lens of parallel edges leave the parent to the sides and carry their labels there
+          const lens = (incoming.get(id) ?? []).filter((edge) => edge.source === parent && edge.parallelOffset)
+          if (parent && lens.length > 0) {
+            const bulge = bulgeOf(lens[0])
+            const textWidth = Math.max(0, ...lens.map((edge) => (edge.label?.length ?? 0) * 6.6 + 6))
+            const labelExtent = direction === undefined
+              ? textWidth
+              : textWidth * Math.abs(Math.sin(direction)) + 18 * Math.abs(Math.cos(direction))
+            const distance = ((radius.get(parent) ?? 0) + (radius.get(id) ?? 0)) / 2
+            own = Math.max(own, 2 * Math.atan((2 * bulge + labelExtent + 10 + room) / 2 / (distance || 1)))
+          }
         }
         const result = Math.max(own, kidsOf(id).reduce((sum, kid) => sum + measure(kid), 0) + loopWindowOf(id))
         width.set(id, result)
@@ -727,16 +881,23 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
           start += kidWidth
         })
       }
-      // the room that is left around the root is shared equally between its children
+      // the room that is left around the root is shared equally between its children; branches that meet in a
+      // common level stay next to each other
       const kids = kidsOf(root.id)
       const squeeze = total > 2 * Math.PI ? (2 * Math.PI) / total : 1
-      const slack = Math.max(0, 2 * Math.PI - total) / Math.max(1, kids.length)
-      let cursor = kids.length > 0 ? -((width.get(kids[0]) ?? 0) * squeeze + slack) / 2 : 0
-      for (const kid of kids) {
-        const sector = (width.get(kid) ?? 0) * squeeze + slack
-        assign(kid, cursor + sector / 2)
-        cursor += sector
-      }
+      const loose = kids.map((kid, index) => !joined.has(`${kid}|${kids[(index + 1) % kids.length]}`))
+      const slack = Math.max(0, 2 * Math.PI - total) / Math.max(1, loose.filter(Boolean).length)
+      const before = (index: number) => loose[(index + kids.length - 1) % kids.length] ? slack / 2 : 0
+      const after = (index: number) => loose[index] ? slack / 2 : 0
+      // a fact that is placed like a level lies on the left; the first child lies exactly in that direction
+      const first = centers.has(root.id) ? Math.PI : 0
+      let end = first
+      kids.forEach((kid, index) => {
+        const sector = (width.get(kid) ?? 0) * squeeze
+        const center = index === 0 ? first : end + before(index) + sector / 2
+        assign(kid, center)
+        end = center + sector / 2 + after(index)
+      })
 
       for (const node of members) {
         const distance = radius.get(node.id) ?? 0
@@ -772,18 +933,36 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
         return { left: center.x - halfWidth, top: center.y - 9, right: center.x + halfWidth, bottom: center.y + 9 }
       }
       const labels = treeEdges.filter((edge) => edge.label).map((edge) => ({ edge, box: labelBox(edge, shiftOf(edge)) }))
+      // An edge that joins a level from another branch passes that branch. When something is in its way, both
+      // of its ends move outwards, beyond what lies between the branches. Past the children of its own ends the
+      // edge gets by when the joined level moves aside.
+      const joins = (edge: DfmEdge) => treeParent.get(edge.target) !== edge.source
+      const detoured = new Set<DfmEdge>()
+      const aside = new Set<DfmEdge>()
+      const avoid = (edge: DfmEdge, obstacle: string) => {
+        const path = pathToRoot(obstacle)
+        if (path.includes(edge.source) || path.includes(edge.target)) aside.add(edge)
+        else detoured.add(edge)
+      }
       for (const edge of treeEdges) {
         const source = byId.get(edge.source)!
         const target = byId.get(edge.target)!
         const crosses = (box: Box) => edgeCrossesBox(source, target, edge.parallelOffset, box)
-        if (members.some((node) => node !== source && node !== target && crosses(nodeBox(node, 4)))) {
-          crowded.add(edge.source)
+        const inTheWay = members.filter((node) => node !== source && node !== target && crosses(nodeBox(node, 4)))
+        if (joins(edge)) inTheWay.forEach((node) => avoid(edge, node.id))
+        else if (inTheWay.length > 0) crowded.add(edge.source)
+        if (joins(edge)) {
+          const line = edgePoints(source, target, edge.parallelOffset)
+          treeEdges.filter((other) => (other.source !== edge.source || other.target !== edge.target)
+            && edgesCross(line, edgePoints(byId.get(other.source)!, byId.get(other.target)!, other.parallelOffset),
+              [source, target, byId.get(other.source)!, byId.get(other.target)!]))
+            .forEach((other) => avoid(edge, other.target))
         }
         // an edge starts and ends below the names of its own nodes, but most of it must be clear of them
         const middleX = ((source.x ?? 0) + (target.x ?? 0)) / 2
         const middleY = ((source.y ?? 0) + (target.y ?? 0)) / 2
-        if (segmentCrossesBox(middleX, middleY, target.x ?? 0, target.y ?? 0, nodeBox(source))
-          || segmentCrossesBox(source.x ?? 0, source.y ?? 0, middleX, middleY, nodeBox(target))) {
+        if (target.type !== 'FACT' && (segmentCrossesBox(middleX, middleY, target.x ?? 0, target.y ?? 0, nodeBox(source))
+          || segmentCrossesBox(source.x ?? 0, source.y ?? 0, middleX, middleY, nodeBox(target)))) {
           crowded.add(edge.source)
         }
         for (const label of labels) {
@@ -808,6 +987,19 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
           blocked.add(second)
         }
       }))
+      // the outer lines of a lens of parallel edges need room to the sides, where they would cross other edges
+      const squeezed = new Set<DfmEdge>()
+      for (const edge of treeEdges) {
+        if (!edge.parallelOffset) continue
+        const source = byId.get(edge.source)!
+        const target = byId.get(edge.target)!
+        const line = edgePoints(source, target, edge.parallelOffset)
+        if (treeEdges.some((other) => (other.source !== edge.source || other.target !== edge.target)
+          && edgesCross(line, edgePoints(byId.get(other.source)!, byId.get(other.target)!, other.parallelOffset),
+            [source, target, byId.get(other.source)!, byId.get(other.target)!]))) {
+          squeezed.add(edge)
+        }
+      }
       labels.forEach((label, index) => {
         for (const node of members) {
           if (!boxesOverlap(label.box, nodeBox(node, 1))) continue
@@ -891,10 +1083,16 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
         const center = edgeLabelCenter(edge, source, target, shiftOf(edge))
         const deltaX = (target.x ?? 0) - (source.x ?? 0)
         const deltaY = (target.y ?? 0) - (source.y ?? 0)
-        const besideEdge = Math.abs((center.x - (source.x ?? 0)) * deltaY - (center.y - (source.y ?? 0)) * deltaX)
-          / (Math.hypot(deltaX, deltaY) || 1) > 1
+        const length = Math.hypot(deltaX, deltaY) || 1
+        // the label of a curved edge lies on the curve
+        const fraction = ((center.x - (source.x ?? 0)) * deltaX + (center.y - (source.y ?? 0)) * deltaY) / length ** 2
+        const curve = (edge.parallelOffset ?? 0) * 4 * fraction * (1 - fraction)
+        const besideEdge = Math.abs(((center.y - (source.y ?? 0)) * deltaX - (center.x - (source.x ?? 0)) * deltaY)
+          / length - curve) > 1
         if (besideEdge) {
           cramped.add(edge)
+        } else if (edge.parallelOffset) {
+          squeezed.add(edge)
         } else if (edge.label && slide(edge)) {
           changed = true
         } else if ((extraRoom.get(edge) ?? 0) < 192) {
@@ -903,11 +1101,26 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
         }
       }
 
+      for (const edge of aside) {
+        if ((extraRoom.get(edge) ?? 0) < 192) squeezed.add(edge)
+        else crowded.add(edge.source)
+      }
+      for (const edge of squeezed) {
+        if ((extraRoom.get(edge) ?? 0) >= 192) continue
+        extraRoom.set(edge, (extraRoom.get(edge) ?? 0) + 16)
+        changed = true
+      }
       for (const source of crowded) {
         const current = gapOf(source)
         if (current >= MAX_GAP) continue
         gaps.set(source, Math.min(MAX_GAP, current * 1.12 + 6))
         changed = true
+      }
+      for (const edge of detoured) {
+        cramped.add(edge)
+        for (const other of incoming.get(edge.source) ?? []) {
+          if (other.source === treeParent.get(edge.source)) cramped.add(other)
+        }
       }
       for (const edge of cramped) {
         const current = lengthOf(edge)
@@ -921,7 +1134,7 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
     // the first passes only settle the directions, which the distances from the root box depend on
     for (let pass = 0; pass < 80; pass += 1) {
       const total = place()
-      if (!repair(total) && pass >= 2) break
+      if (!repair(total) && !lensMoved && pass >= 2) break
     }
     const loopBounds = treeLoops.map((loop) => selfLoopShape(loop.source as SimNode, resolvedLinks, loop.label,
       loop.parallelOffset).bounds)
@@ -956,6 +1169,14 @@ function placeTrees(nodes: SimNode[], allEdges: DfmGraph['edges']) {
       node.y = (node.y ?? 0) + offsetY
     })
   })
+  // connections of a fact that were turned around for the layout
+  for (const [edge, layoutEdge] of turned) {
+    if (layoutEdge.parallelOffset !== undefined) edge.parallelOffset = -layoutEdge.parallelOffset
+    const shift = labelShifts.get(layoutEdge)
+    if (shift === undefined) continue
+    labelShifts.delete(layoutEdge)
+    labelShifts.set(edge, -shift)
+  }
   return labelShifts
 }
 
