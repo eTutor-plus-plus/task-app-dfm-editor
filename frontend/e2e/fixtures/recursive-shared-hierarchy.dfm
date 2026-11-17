@@ -4,4 +4,6 @@ hierarchy employee {
   employee - region;
 };
 dimension employee { {shared} employee; };
-Sales - employee;
+dimension manager { {shared} employee; };
+Sales -[worker]- employee;
+Sales -[manager]- manager;

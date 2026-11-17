@@ -1,10 +1,12 @@
 package at.jku.dke.dfm.editor.api;
 
+import at.jku.dke.dfm.core.parser.DfmParseException;
 import at.jku.dke.dfm.core.parser.DfmParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DfmGraphMapperTest {
@@ -173,8 +175,10 @@ class DfmGraphMapperTest {
             hierarchy VAT { VAT - vatClass; };
             hierarchy city { city - country - {cross} VAT; };
             dimension city { {shared} city; };
+            dimension customer { customer -[customerCity]- {shared} city; };
             dimension product { product - category - {cross} VAT; };
             Sales -[storeCity]- city;
+            Sales - customer;
             Sales - product;
             """);
 
@@ -185,9 +189,24 @@ class DfmGraphMapperTest {
         assertEquals(DfmGraphDto.NodeType.LEVEL, nodeType(graph, "country"));
         assertEquals(1, graph.nodes().stream().filter(node -> node.label().equals("VAT")).count());
         assertTrue(hasEdge(graph, "Sales", "city"));
+        assertTrue(hasEdge(graph, "customer", "city"));
         assertTrue(hasEdge(graph, "country", "VAT"));
         assertTrue(hasEdge(graph, "category", "VAT"));
         assertTrue(graph.edges().stream().anyMatch(edge -> "storeCity".equals(edge.label())));
+    }
+
+    @Test
+    void rejectsSharedHierarchyWithASingleIncomingConnection() {
+        var parser = new DfmParser();
+
+        var exception = assertThrows(DfmParseException.class, () -> parser.parse("""
+            fact Sales { profit; };
+            hierarchy city { city - country; };
+            dimension city { {shared} city; };
+            Sales - city;
+            """));
+
+        assertTrue(exception.getMessage().contains("only one connection"), exception.getMessage());
     }
 
     private static DfmGraphDto.NodeType nodeType(DfmGraphDto graph, String label) {
