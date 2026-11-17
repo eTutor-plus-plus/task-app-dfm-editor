@@ -196,6 +196,15 @@ class DfmGraphMapperTest {
     }
 
     @Test
+    void rejectsASecondFact() {
+        var exception = assertThrows(DfmParseException.class,
+            () -> new DfmParser().parse("fact Sales { profit; };\nfact Purchase { quantity; };"));
+
+        assertTrue(exception.getMessage().contains("only have one fact"), exception.getMessage());
+        assertEquals(2, exception.getLine());
+    }
+
+    @Test
     void rejectsSharedHierarchyWithASingleIncomingConnection() {
         var parser = new DfmParser();
 

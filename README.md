@@ -1,6 +1,6 @@
 # DFM Editor
 
-Eigenständiger browserbasierter Editor zum Eingeben und Visualisieren von Dimensionalen Faktenmodellen (DFM). Das Projekt ist unabhängig vom `task-administration-ui`.
+Eigenständiger browserbasierter Editor zum Eingeben und Visualisieren von Dimensionalen Faktenmodellen (DFM). Ein Modell enthält höchstens einen `fact`; ein zweiter wird als Fehler an seiner Position gemeldet. Das Projekt ist unabhängig vom `task-administration-ui`.
 
 ## Architektur
 

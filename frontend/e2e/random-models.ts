@@ -17,7 +17,7 @@ function mulberry32(seed: number) {
   }
 }
 
-// Builds a graph in the shape the backend returns: facts with measures and descriptives, dimensions as trees
+// Builds a graph in the shape the backend returns: one fact with measures and descriptives, dimensions as trees
 // of levels with descriptive leaves, optional parts, labelled edges, recursive hierarchies (self-loops with a role)
 // and levels shared by several parents.
 export function randomGraph(seed: number): DfmGraph {
@@ -33,86 +33,81 @@ export function randomGraph(seed: number): DfmGraph {
     edges.push({ source, target, connectionType, optional, label } as DfmGraph['edges'][number])
   }
 
-  const factCount = pick([1, 1, 1, 2, 3])
-  let dimensionIndex = 0
-  for (let factIndex = 0; factIndex < factCount; factIndex += 1) {
-    const factId = `fact-${factIndex}`
-    nodes.push({
-      id: factId,
-      label: `Fact${factIndex}${chance(0.2) ? 'WithLongName' : ''}`,
-      type: 'FACT',
-      optional: false,
-      details: Array.from({ length: int(0, 4) }, (_, index) => `measure${index}`),
-    })
-    const descriptiveCount = chance(0.25) ? int(1, 2) : 0
-    for (let index = 0; index < descriptiveCount; index += 1) {
-      const id = `${factId}-descriptive-${index}`
-      nodes.push({ id, label: `note${index}`, type: 'DESCRIPTIVE', optional: false, details: [] })
-      addEdge(factId, id, 'SIMPLE', false, null)
+  const factId = 'fact-0'
+  nodes.push({
+    id: factId,
+    label: `Fact0${chance(0.2) ? 'WithLongName' : ''}`,
+    type: 'FACT',
+    optional: false,
+    details: Array.from({ length: int(0, 4) }, (_, index) => `measure${index}`),
+  })
+  const descriptiveCount = chance(0.25) ? int(1, 2) : 0
+  for (let index = 0; index < descriptiveCount; index += 1) {
+    const id = `${factId}-descriptive-${index}`
+    nodes.push({ id, label: `note${index}`, type: 'DESCRIPTIVE', optional: false, details: [] })
+    addEdge(factId, id, 'SIMPLE', false, null)
+  }
+
+  const dimensionCount = int(0, 6)
+  for (let dimension = 0; dimension < dimensionCount; dimension += 1) {
+    const prefix = `dimension-${dimension}-level-`
+    const children = new Map<string, string[]>()
+    const levels: string[] = []
+    let counter = 0
+    const addNode = (descriptive: boolean) => {
+      const label = `${pick(names)}${counter}`
+      counter += 1
+      const id = prefix + label
+      nodes.push({
+        id,
+        label,
+        type: descriptive ? 'DESCRIPTIVE' : 'LEVEL',
+        optional: !descriptive && chance(0.1),
+        details: [],
+      })
+      if (!descriptive) levels.push(id)
+      return id
     }
 
-    const dimensionCount = int(0, factCount === 1 ? 6 : 3)
-    for (let dimension = 0; dimension < dimensionCount; dimension += 1) {
-      const prefix = `dimension-${dimensionIndex}-level-`
-      dimensionIndex += 1
-      const children = new Map<string, string[]>()
-      const levels: string[] = []
-      let counter = 0
-      const addNode = (descriptive: boolean) => {
-        const label = `${pick(names)}${counter}`
-        counter += 1
-        const id = prefix + label
-        nodes.push({
-          id,
-          label,
-          type: descriptive ? 'DESCRIPTIVE' : 'LEVEL',
-          optional: !descriptive && chance(0.1),
-          details: [],
-        })
-        if (!descriptive) levels.push(id)
-        return id
+    const head = addNode(false)
+    addEdge(factId, head, 'SIMPLE', false, chance(0.3) ? pick(edgeLabels) : null)
+    const queue = [{ id: head, depth: 0 }]
+    for (let index = 0; index < queue.length; index += 1) {
+      const { id, depth } = queue[index]
+      if (depth >= 4) continue
+      const childCount = depth === 0 ? int(0, 3) : pick([0, 0, 1, 1, 1, 2, 3])
+      for (let child = 0; child < childCount && counter < 10; child += 1) {
+        const descriptive = chance(0.2)
+        const childId = addNode(descriptive)
+        children.set(id, [...(children.get(id) ?? []), childId])
+        addEdge(id, childId, descriptive ? 'SIMPLE' : pick(['SIMPLE', 'SIMPLE', 'SIMPLE', 'MULTIPLE', 'CONVERGENCE']),
+          chance(0.1), chance(0.25) ? pick(edgeLabels) : null)
+        if (!descriptive) queue.push({ id: childId, depth: depth + 1 })
       }
+    }
 
-      const head = addNode(false)
-      addEdge(factId, head, 'SIMPLE', false, chance(0.3) ? pick(edgeLabels) : null)
-      const queue = [{ id: head, depth: 0 }]
-      for (let index = 0; index < queue.length; index += 1) {
-        const { id, depth } = queue[index]
-        if (depth >= 4) continue
-        const childCount = depth === 0 ? int(0, 3) : pick([0, 0, 1, 1, 1, 2, 3])
-        for (let child = 0; child < childCount && counter < 10; child += 1) {
-          const descriptive = chance(0.2)
-          const childId = addNode(descriptive)
-          children.set(id, [...(children.get(id) ?? []), childId])
-          addEdge(id, childId, descriptive ? 'SIMPLE' : pick(['SIMPLE', 'SIMPLE', 'SIMPLE', 'MULTIPLE', 'CONVERGENCE']),
-            chance(0.1), chance(0.25) ? pick(edgeLabels) : null)
-          if (!descriptive) queue.push({ id: childId, depth: depth + 1 })
+    // a level reached from a second parent (e.g. year from month and from week)
+    if (levels.length >= 3 && chance(0.4)) {
+      const target = pick(levels.slice(1))
+      const descendants = new Set<string>([target])
+      const stack = [target]
+      while (stack.length > 0) {
+        for (const child of children.get(stack.pop()!) ?? []) {
+          descendants.add(child)
+          stack.push(child)
         }
       }
-
-      // a level reached from a second parent (e.g. year from month and from week)
-      if (levels.length >= 3 && chance(0.4)) {
-        const target = pick(levels.slice(1))
-        const descendants = new Set<string>([target])
-        const stack = [target]
-        while (stack.length > 0) {
-          for (const child of children.get(stack.pop()!) ?? []) {
-            descendants.add(child)
-            stack.push(child)
-          }
-        }
-        const sources = levels.filter((level) => !descendants.has(level)
-          && !edges.some((edge) => edge.source === level && edge.target === target))
-        if (sources.length > 0) {
-          addEdge(pick(sources), target, pick(['SIMPLE', 'CONVERGENCE']), false, chance(0.2) ? pick(edgeLabels) : null)
-        }
+      const sources = levels.filter((level) => !descendants.has(level)
+        && !edges.some((edge) => edge.source === level && edge.target === target))
+      if (sources.length > 0) {
+        addEdge(pick(sources), target, pick(['SIMPLE', 'CONVERGENCE']), false, chance(0.2) ? pick(edgeLabels) : null)
       }
+    }
 
-      // a recursive hierarchy (a level that refers to itself with a role)
-      if (chance(0.25)) {
-        const level = pick(levels)
-        addEdge(level, level, pick(['CONVERGENCE', 'CONVERGENCE', 'SIMPLE']), false, pick(roles))
-      }
+    // a recursive hierarchy (a level that refers to itself with a role)
+    if (chance(0.25)) {
+      const level = pick(levels)
+      addEdge(level, level, pick(['CONVERGENCE', 'CONVERGENCE', 'SIMPLE']), false, pick(roles))
     }
   }
   return { nodes, edges }
