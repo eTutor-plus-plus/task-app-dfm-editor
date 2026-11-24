@@ -2,8 +2,8 @@
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { basicSetup, EditorView } from 'codemirror'
 import { indentWithTab } from '@codemirror/commands'
-import { StreamLanguage } from '@codemirror/language'
-import { EditorState } from '@codemirror/state'
+import { foldService, StreamLanguage } from '@codemirror/language'
+import { countColumn, EditorState } from '@codemirror/state'
 import { keymap } from '@codemirror/view'
 import { translate, type Locale } from '../i18n'
 import CopyButton from './CopyButton.vue'
@@ -33,6 +33,23 @@ const dfmLanguage = StreamLanguage.define({
     return null
   },
   languageData: { commentTokens: { line: '//' } },
+})
+
+// A line can be folded when the following lines are indented deeper; the closing line stays visible.
+const indentationFolding = foldService.of((state, lineStart, lineEnd) => {
+  const { doc } = state
+  const line = doc.lineAt(lineStart)
+  if (line.text.trim() === '') return null
+  const indentOf = (text: string) => countColumn(/^\s*/.exec(text)![0], state.tabSize)
+  const baseIndent = indentOf(line.text)
+  let foldEnd = -1
+  for (let number = line.number + 1; number <= doc.lines; number += 1) {
+    const next = doc.line(number)
+    if (next.text.trim() === '') continue
+    if (indentOf(next.text) <= baseIndent) break
+    foldEnd = next.to
+  }
+  return foldEnd > lineEnd ? { from: lineEnd, to: foldEnd } : null
 })
 
 function prettifyDfm(source: string) {
@@ -172,6 +189,7 @@ onMounted(() => {
         basicSetup,
         keymap.of([indentWithTab]),
         dfmLanguage,
+        indentationFolding,
         EditorView.updateListener.of((update) => {
           if (update.docChanged) emit('update:modelValue', update.state.doc.toString())
         }),
@@ -180,6 +198,28 @@ onMounted(() => {
           '.cm-scroller': { fontFamily: 'ui-monospace, Consolas, monospace' },
           '.cm-content': { padding: '16px 0' },
           '.cm-gutters': { backgroundColor: '#f8fafc', border: 'none' },
+          '.cm-lineNumbers .cm-gutterElement': { padding: '0 8px 0 14px' },
+          '.cm-foldGutter .cm-gutterElement': {
+            padding: '0 10px 0 2px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#64748b',
+          },
+          '.cm-foldGutter .cm-gutterElement:hover': { color: '#0f172a' },
+          '.cm-foldGutter span': {
+            display: 'block',
+            boxSizing: 'border-box',
+            width: '7px',
+            height: '7px',
+            fontSize: '0',
+            borderRight: '1.5px solid currentColor',
+            borderBottom: '1.5px solid currentColor',
+          },
+          '.cm-foldGutter span[title="Fold line"]': { transform: 'translateY(-2px) rotate(45deg)' },
+          '.cm-foldGutter span[title="Unfold line"]': { transform: 'translateX(-1px) rotate(-45deg)' },
+          '.cm-line': { padding: '0 8px 0 10px' },
         }),
       ],
     }),

@@ -462,6 +462,21 @@ test('preserves optional and multiple fact connections when formatting', async (
   expect(formatted).toContain('F =[billing]= D;')
 })
 
+test('folds and unfolds an indented block via the gutter arrow', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('.cm-content').fill('fact F{m1;m2;};dimension D{d;};F-D;')
+  await page.getByRole('button', { name: 'Formatieren' }).click()
+  await expect(page.locator('.cm-line', { hasText: 'm1;' })).toBeVisible()
+
+  await page.locator('.cm-foldGutter span[title="Fold line"]').first().click()
+  await expect(page.locator('.cm-line', { hasText: 'm1;' })).toHaveCount(0)
+  await expect(page.locator('.cm-line', { hasText: 'm2;' })).toHaveCount(0)
+  await expect(page.locator('.cm-line', { hasText: 'dimension D' })).toBeVisible()
+
+  await page.locator('.cm-foldGutter span[title="Unfold line"]:visible').click()
+  await expect(page.locator('.cm-line', { hasText: 'm1;' })).toBeVisible()
+})
+
 test('replaces a rendered graph when a smaller model is run', async ({ page }) => {
   const large = scenarios.find((scenario) => scenario.name === 'purchase')!
   const small = scenarios.find((scenario) => scenario.name === 'long-labels')!

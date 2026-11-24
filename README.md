@@ -12,6 +12,8 @@ Im Entwicklungsmodus läuft das Frontend mit Vite auf Port 5173 und leitet `/api
 
 Der Editor unterstützt Zeilenkommentare mit `//` (Syntax-Highlighting, Umschalten mit `Strg+/`; die Formatierung erhält Kommentare) und Beschreibungen an Hierarchie-Verbindungen, z. B. `customer -[customercity]- city` (auch `=[text]=` und `-[text]->`) sowie an Fakt-Dimension-Verbindungen, z. B. `Sales -[soldat]- Time`. Beschreibungen werden als Beschriftung an der Kante dargestellt (bei Fakt-Dimension-Verbindungen an der Kante vom Fakt zum ersten Level der Dimension). Beides wird vom Core-Parser ab Version 1.4.0 unterstützt.
 
+Eingerückte Blöcke (z. B. `fact`, `dimension`, `hierarchy`) lassen sich über die Pfeile neben den Zeilennummern ein- und ausklappen; das Einklappen richtet sich nach der Einrückung, daher zuerst formatieren.
+
 Fakt-Dimension-Verbindungen können optional oder mehrfach sein, z. B. `Sales (-) Time;`, `Sales = Time;` oder `Sales (-[soldat]-) Time;`. Mehrere Rollen zur selben Dimension sind möglich (`Invoice -[shipping]- Customer; Invoice -[billing]- Customer;`); unterschiedliche parallele Verbindungen werden getrennt dargestellt. Diese Funktionen benötigen Core ab Version 1.6.0.
 
 Rekursive Hierarchien unterstützen optionale Verbindungen, beispielsweise `worker (-[supervisor]-) worker;`. Mehrfache rekursive Verbindungen (`=`) sind nicht zulässig; zwischen verschiedenen Levels bleiben mehrfache Verbindungen möglich.
